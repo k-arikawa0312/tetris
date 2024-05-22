@@ -35,7 +35,6 @@ const fallBlock = (board: number[][]) => {
       if (board[y][x] === 1 && board[y + 1]?.[x] !== 2) {
         position.push([x, y + 1]);
         if (y === 19) {
-          console.table(board);
           for (const [tx, ty] of block) {
             if (board[ty] !== undefined) {
               board[ty][tx] = 2;
@@ -60,8 +59,8 @@ const fallBlock = (board: number[][]) => {
 const Home = () => {
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -81,6 +80,15 @@ const Home = () => {
     [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
   ]);
 
+  const keyHandler = (event: React.KeyboardEvent) => {
+    console.log(555);
+    event.preventDefault();
+    const key = event.key;
+    if (key === 'ArrowDown') {
+      click();
+    }
+    return;
+  };
   const click = () => {
     const aaa = structuredClone(board);
     const newBoard = fallBlock(aaa);
@@ -90,8 +98,7 @@ const Home = () => {
 
   console.log(board);
   return (
-    <div className={styles.container}>
-      <button onClick={click}>落ちる</button>
+    <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       <div className={styles.backBoard}>
         {board.map((row, y) =>
           row.map((display, x) => (
