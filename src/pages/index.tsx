@@ -56,11 +56,48 @@ const fallBlock = (board: number[][]) => {
   return changeBlock(board, position, 1);
 };
 
+const moveLeftBlock = (board: number[][]) => {
+  const position = [];
+  const block = [];
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 20; y++) {
+      if (board[y][x] === 1) {
+        block.push([x, y]);
+        if (x !== 0) {
+          position.push([x - 1, y]);
+          board[y][x] = 0;
+        } else if (x === 0) {
+          return board;
+        }
+      }
+    }
+  }
+  return changeBlock(board, position, 1);
+};
+
+const moveRightBlock = (board: number[][]) => {
+  const position = [];
+  const block = [];
+  for (let x = 9; x >= 0; x--) {
+    for (let y = 0; y < 20; y++) {
+      if (board[y][x] === 1) {
+        block.push([x, y]);
+        if (x !== 9) {
+          position.push([x + 1, y]);
+          board[y][x] = 0;
+        } else if (x === 9) {
+          return board;
+        }
+      }
+    }
+  }
+  return changeBlock(board, position, 1);
+};
 const Home = () => {
   const [board, setBoard] = useState([
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -85,14 +122,26 @@ const Home = () => {
     event.preventDefault();
     const key = event.key;
     if (key === 'ArrowDown') {
-      click();
+      downBlock();
+    }
+    if (key === 'ArrowLeft') {
+      leftBlock();
+    }
+    if (key === 'ArrowRight') {
+      rightBlock();
     }
     return;
   };
-  const click = () => {
-    const aaa = structuredClone(board);
-    const newBoard = fallBlock(aaa);
-
+  const downBlock = () => {
+    const newBoard = fallBlock(board);
+    setBoard(newBoard);
+  };
+  const leftBlock = () => {
+    const newBoard = moveLeftBlock(board);
+    setBoard(newBoard);
+  };
+  const rightBlock = () => {
+    const newBoard = moveRightBlock(board);
     setBoard(newBoard);
   };
 
