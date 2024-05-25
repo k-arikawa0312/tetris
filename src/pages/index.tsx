@@ -1,6 +1,7 @@
 import styles from './index.module.css';
 import React, { useState } from 'react';
 
+let isDroped = false;
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
   for (const [tx, ty] of position) {
@@ -18,11 +19,13 @@ const fallBlock = (board: number[][]) => {
         for (let ny = 0; ny < 20; ny++) {
           if (board[ny][nx] === 1) {
             block.push([nx, ny]);
-            if (board[ny + 1][nx] === 2) {
+            if (board[ny + 1]?.[nx] === 2) {
               for (let ty = 0; ty < 20; ty++) {
                 for (let tx = 0; tx < 10; tx++) {
                   if (board[ty] !== undefined && board[ty][tx] === 1) {
                     board[ty][tx] = 2;
+                    isDroped = true;
+                    console.log(28);
                   }
                 }
               }
@@ -38,16 +41,11 @@ const fallBlock = (board: number[][]) => {
           for (const [tx, ty] of block) {
             if (board[ty] !== undefined) {
               board[ty][tx] = 2;
+              isDroped = true;
+              console.log(44);
             }
           }
           return board;
-        }
-        if (board[y + 1]?.[x] === 2) {
-          for (const [tx, ty] of block) {
-            if (board[ty] !== undefined) {
-              board[ty][tx] = 2;
-            }
-          }
         }
         board[y][x] = 0;
       }
@@ -64,6 +62,15 @@ const moveLeftBlock = (board: number[][]) => {
       if (board[y][x] === 1) {
         block.push([x, y]);
         if (x !== 0) {
+          let noLeftBlock = 0;
+          for (const [tx, ty] of block) {
+            if (board[ty][tx - 1] === 2) {
+              noLeftBlock += 1;
+            }
+          }
+          if (noLeftBlock !== 0) {
+            return board;
+          }
           position.push([x - 1, y]);
           board[y][x] = 0;
         } else if (x === 0) {
@@ -83,6 +90,15 @@ const moveRightBlock = (board: number[][]) => {
       if (board[y][x] === 1) {
         block.push([x, y]);
         if (x !== 9) {
+          let noRightBlock = 0;
+          for (const [tx, ty] of block) {
+            if (board[ty][tx + 1] === 2) {
+              noRightBlock += 1;
+            }
+          }
+          if (noRightBlock !== 0) {
+            return board;
+          }
           position.push([x + 1, y]);
           board[y][x] = 0;
         } else if (x === 9) {
@@ -93,10 +109,11 @@ const moveRightBlock = (board: number[][]) => {
   }
   return changeBlock(board, position, 1);
 };
+
 const Home = () => {
   const [board, setBoard] = useState([
-    [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -118,7 +135,6 @@ const Home = () => {
   ]);
 
   const keyHandler = (event: React.KeyboardEvent) => {
-    console.log(555);
     event.preventDefault();
     const key = event.key;
     if (key === 'ArrowDown') {
@@ -129,6 +145,14 @@ const Home = () => {
     }
     if (key === 'ArrowRight') {
       rightBlock();
+    }
+    if (key === ' ') {
+      isDroped = false;
+      while (isDroped === false) {
+        console.log(78);
+        console.log(isDroped);
+        downBlock();
+      }
     }
     return;
   };
@@ -147,7 +171,7 @@ const Home = () => {
 
   console.log(board);
   return (
-    <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
+    <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
       <div className={styles.backBoard}>
         {board.map((row, y) =>
           row.map((display, x) => (
