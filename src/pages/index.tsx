@@ -25,11 +25,10 @@ const fallBlock = (board: number[][]) => {
                   if (board[ty] !== undefined && board[ty][tx] === 1) {
                     board[ty][tx] = 2;
                     isDroped = true;
-                    console.log(28);
                   }
                 }
               }
-
+              isDroped = true;
               return board;
             }
           }
