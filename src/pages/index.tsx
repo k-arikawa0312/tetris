@@ -16,12 +16,9 @@ const makeBlock = (board: number[][]) => {
     for (let y = 0; y < 20; y++) {
       if (board[y][x] === 1) {
         block.push([x, y]);
-
-        console.log(block);
       }
     }
   }
-  console.log(block);
 
   return block;
 };
@@ -29,7 +26,6 @@ const makeBlock = (board: number[][]) => {
 const fallBlock = (board: number[][]) => {
   const position = [];
   const block = makeBlock(board);
-  console.log(block);
 
   for (const [tx, ty] of block) {
     if (ty === 19 || tx === -1 || board[ty + 1]?.[tx] === 2) {
@@ -53,17 +49,14 @@ const fallBlock = (board: number[][]) => {
       ) {
         for (const [tx, ty] of block) {
           if (board[ty] !== undefined) {
-            console.log(4555555);
             position.push([tx, ty + 1]);
             board[ty][tx] = 0;
           }
         }
-        console.log('seikou');
         return changeBlock(board, position, 1);
       }
     }
   }
-  console.log('sippai');
   return board;
 };
 
@@ -72,8 +65,6 @@ const moveLeftBlock = (board: number[][]) => {
   const block = makeBlock(board);
   for (let x = 20; x >= 0; x--) {
     for (let y = 0; y < 20; y++) {
-      console.log(block);
-      console.log(block[0].includes(x, y));
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
@@ -95,6 +86,7 @@ const moveLeftBlock = (board: number[][]) => {
         }
         for (const [tx, ty] of block) {
           position.push([tx - 1, ty]);
+          console.log(position);
           board[ty][tx] = 0;
         }
 
@@ -107,30 +99,38 @@ const moveLeftBlock = (board: number[][]) => {
 
 const moveRightBlock = (board: number[][]) => {
   const position = [];
-  const block = [];
-  for (let x = 9; x >= 0; x--) {
+  const block = makeBlock(board);
+  for (let x = 0; x < 20; x++) {
     for (let y = 0; y < 20; y++) {
-      if (board[y][x] === 1) {
-        block.push([x, y]);
-        if (x !== 9) {
-          let noRightBlock = 0;
-          for (const [tx, ty] of block) {
-            if (board[ty][tx + 1] === 2) {
-              noRightBlock += 1;
-            }
+      if (
+        block[0] !== undefined &&
+        block[0].includes(x, y) &&
+        board[y]?.[x + 1] !== 2 &&
+        block[0]?.[0] !== 9 &&
+        block[1]?.[0] !== 9 &&
+        block[2]?.[0] !== 9 &&
+        block[3]?.[0] !== 9
+      ) {
+        let noRightBlock = 0;
+
+        for (const [tx, ty] of block) {
+          if (board[ty][tx + 1] === 2) {
+            noRightBlock += 1;
           }
-          if (noRightBlock !== 0) {
-            return board;
-          }
-          position.push([x + 1, y]);
-          board[y][x] = 0;
-        } else if (x === 9) {
+        }
+        if (noRightBlock !== 0) {
           return board;
         }
+        for (const [tx, ty] of block) {
+          position.push([tx + 1, ty]);
+          board[ty][tx] = 0;
+        }
+
+        return changeBlock(board, position, 1);
       }
     }
   }
-  return changeBlock(board, position, 1);
+  return board;
 };
 
 const Home = () => {
@@ -200,7 +200,6 @@ const Home = () => {
     setBoard(newBoard);
   };
 
-  console.log(board);
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
       <div className={styles.backBoard}>
