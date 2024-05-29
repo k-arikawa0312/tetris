@@ -27,42 +27,40 @@ const fallBlock = (board: number[][]) => {
   const position = [];
   makeBlock(board);
   console.log(block);
-  console.table(board);
-  for (let x = 0; x < 10; x++) {
-    for (let y = 0; y < 20; y++) {
-      if (board[y + 1]?.[x] === 2) {
-        console.log(24);
-        for (let ty = 0; ty < 20; ty++) {
-          for (let tx = 0; tx < 10; tx++) {
-            if (board[ty] !== undefined && board[ty][tx] === 1) {
-              board[ty][tx] = 2;
-              isDroped = true;
-              console.log(29, isDroped);
-            }
-          }
-        }
-        isDroped = true;
-        console.log(33, isDroped);
-        return board;
+  // console.table(board);
+  for (const [tx, ty] of block) {
+    if (ty === 19 || tx === -1) {
+      for (const [nx, ny] of block) {
+        board[ny][nx] = 2;
       }
-      if (board[y][x] === 1 && board[y + 1]?.[x] !== 2) {
-        position.push([x, y + 1]);
-        if (y === 19) {
-          for (const [tx, ty] of block) {
-            if (board[ty] !== undefined) {
-              board[ty][tx] = 2;
-              isDroped = true;
-              console.log(44, isDroped);
-            }
-          }
-          return board;
-        }
-        board[y][x] = 0;
-      }
+      return board;
     }
   }
 
-  return changeBlock(board, position, 1);
+  for (const [tx, ty] of block) {
+    if (board[ty + 1]?.[tx] === 2) {
+      for (const [nx, ny] of block) {
+        board[ny][nx] = 2;
+        isDroped = true;
+        console.log(29, isDroped);
+      }
+      return board;
+    }
+  }
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 20; y++) {
+      if (block[0] !== undefined && block[0].includes(x, y) && board[y + 1]?.[x] !== 2) {
+        for (const [tx, ty] of block) {
+          position.push([tx, ty + 1]);
+          console.log(position);
+          board[ty][tx] = 0;
+        }
+        console.log(65656);
+        return changeBlock(board, position, 1);
+      }
+    }
+  }
+  return board;
 };
 
 const moveLeftBlock = (board: number[][]) => {
