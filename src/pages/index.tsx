@@ -16,7 +16,7 @@ const makeBlock = (board: number[][]) => {
     for (let y = 0; y < 20; y++) {
       if (board[y][x] === 1) {
         block.push([x, y]);
-        console.log(21);
+
         console.log(block);
       }
     }
@@ -30,9 +30,8 @@ const fallBlock = (board: number[][]) => {
   const position = [];
   const block = makeBlock(board);
   console.log(block);
-  // console.table(board);
+
   for (const [tx, ty] of block) {
-    console.log(35);
     if (ty === 19 || tx === -1 || board[ty + 1]?.[tx] === 2) {
       for (const [nx, ny] of block) {
         board[ny][nx] = 2;
@@ -70,30 +69,40 @@ const fallBlock = (board: number[][]) => {
 
 const moveLeftBlock = (board: number[][]) => {
   const position = [];
-  const block = [];
-  for (let x = 0; x < 10; x++) {
+  const block = makeBlock(board);
+  for (let x = 20; x >= 0; x--) {
     for (let y = 0; y < 20; y++) {
-      if (board[y][x] === 1) {
-        block.push([x, y]);
-        if (x !== 0) {
-          let noLeftBlock = 0;
-          for (const [tx, ty] of block) {
-            if (board[ty][tx - 1] === 2) {
-              noLeftBlock += 1;
-            }
+      console.log(block);
+      console.log(block[0].includes(x, y));
+      if (
+        block[0] !== undefined &&
+        block[0].includes(x, y) &&
+        board[y]?.[x - 1] !== 2 &&
+        block[0]?.[0] !== 0 &&
+        block[1]?.[0] !== 0 &&
+        block[2]?.[0] !== 0 &&
+        block[3]?.[0] !== 0
+      ) {
+        let noLeftBlock = 0;
+
+        for (const [tx, ty] of block) {
+          if (board[ty][tx - 1] === 2) {
+            noLeftBlock += 1;
           }
-          if (noLeftBlock !== 0) {
-            return board;
-          }
-          position.push([x - 1, y]);
-          board[y][x] = 0;
-        } else if (x === 0) {
+        }
+        if (noLeftBlock !== 0) {
           return board;
         }
+        for (const [tx, ty] of block) {
+          position.push([tx - 1, ty]);
+          board[ty][tx] = 0;
+        }
+
+        return changeBlock(board, position, 1);
       }
     }
   }
-  return changeBlock(board, position, 1);
+  return board;
 };
 
 const moveRightBlock = (board: number[][]) => {
