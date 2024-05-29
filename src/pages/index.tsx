@@ -1,8 +1,6 @@
 import styles from './index.module.css';
 import React, { useState } from 'react';
 
-let isDroped = false;
-
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
   for (const [tx, ty] of position) {
@@ -34,7 +32,8 @@ const fallBlock = (board: number[][]) => {
   console.log(block);
   // console.table(board);
   for (const [tx, ty] of block) {
-    if (ty === 19 || tx === -1) {
+    console.log(35);
+    if (ty === 19 || tx === -1 || board[ty + 1]?.[tx] === 2) {
       for (const [nx, ny] of block) {
         board[ny][nx] = 2;
       }
@@ -42,32 +41,30 @@ const fallBlock = (board: number[][]) => {
     }
   }
 
-  for (const [tx, ty] of block) {
-    if (board[ty + 1]?.[tx] === 2) {
-      for (const [nx, ny] of block) {
-        board[ny][nx] = 2;
-        isDroped = true;
-        console.log(29, isDroped);
-      }
-      return board;
-    }
-  }
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
-      console.log(4555555);
-      if (block[0] !== undefined && block[0].includes(x, y) && board[y + 1]?.[x] !== 2) {
+      if (
+        block[0] !== undefined &&
+        block[0].includes(x, y) &&
+        board[y + 1]?.[x] !== 2 &&
+        block[0][0] !== 19 &&
+        block[0][1] !== 19 &&
+        block[0][2] !== 19 &&
+        block[0][3] !== 19
+      ) {
         for (const [tx, ty] of block) {
           if (board[ty] !== undefined) {
+            console.log(4555555);
             position.push([tx, ty + 1]);
-
             board[ty][tx] = 0;
           }
         }
-        console.log(65656);
+        console.log('seikou');
         return changeBlock(board, position, 1);
       }
     }
   }
+  console.log('sippai');
   return board;
 };
 
@@ -164,18 +161,14 @@ const Home = () => {
       rightBlock();
     }
     if (key === ' ') {
-      isDroped = false;
-
-      while (isDroped === false) {
-        console.log(153, isDroped);
-        downBlock();
-      }
+      hardDrop();
     }
     return;
   };
   const downBlock = () => {
     const newBoard = fallBlock(board);
     setBoard(newBoard);
+    return newBoard;
   };
   const leftBlock = () => {
     const newBoard = moveLeftBlock(board);
@@ -183,6 +176,18 @@ const Home = () => {
   };
   const rightBlock = () => {
     const newBoard = moveRightBlock(board);
+    setBoard(newBoard);
+  };
+  const hardDrop = () => {
+    let newBoard = board;
+    let wasDropped = false;
+
+    do {
+      const tempBoard = fallBlock(newBoard);
+      wasDropped = newBoard !== tempBoard;
+      newBoard = tempBoard;
+    } while (wasDropped);
+
     setBoard(newBoard);
   };
 
