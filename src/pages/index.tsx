@@ -2,7 +2,7 @@ import styles from './index.module.css';
 import React, { useState } from 'react';
 
 let isDroped = false;
-const block: number[][] = [];
+
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
   for (const [tx, ty] of position) {
@@ -12,20 +12,25 @@ const changeBlock = (board: number[][], position: number[][], toChange: number) 
 };
 
 const makeBlock = (board: number[][]) => {
-  block.length = 0;
+  const block = [];
+
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
       if (board[y][x] === 1) {
         block.push([x, y]);
+        console.log(21);
+        console.log(block);
       }
     }
   }
+  console.log(block);
+
   return block;
 };
 
 const fallBlock = (board: number[][]) => {
   const position = [];
-  makeBlock(board);
+  const block = makeBlock(board);
   console.log(block);
   // console.table(board);
   for (const [tx, ty] of block) {
@@ -49,11 +54,14 @@ const fallBlock = (board: number[][]) => {
   }
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
+      console.log(4555555);
       if (block[0] !== undefined && block[0].includes(x, y) && board[y + 1]?.[x] !== 2) {
         for (const [tx, ty] of block) {
-          position.push([tx, ty + 1]);
-          console.log(position);
-          board[ty][tx] = 0;
+          if (board[ty] !== undefined) {
+            position.push([tx, ty + 1]);
+
+            board[ty][tx] = 0;
+          }
         }
         console.log(65656);
         return changeBlock(board, position, 1);
