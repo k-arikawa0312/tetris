@@ -3,24 +3,11 @@ import React, { useState } from 'react';
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
-  let line = 0;
-  const deletePos = [];
+
   for (const [tx, ty] of position) {
     if (newBoard[ty] !== undefined) newBoard[ty][tx] = toChange;
   }
-  for (let row = 0; row < 20; row++) {
-    line = newBoard[row].filter((cell) => cell !== 0).length;
-    console.log(row, line);
-    if (line === 10) {
-      for (let x = 0; x < 10; x++) {
-        deletePos.push([x, row]);
-      }
-      console.log(deletePos);
 
-      const deletedBoard: number[][] = changeBlock(newBoard, deletePos, 0);
-      return deletedBoard;
-    }
-  }
   console.table(newBoard);
   return newBoard;
 };
@@ -39,6 +26,30 @@ const makeBlock = (board: number[][]) => {
   return block;
 };
 
+const deleteLine = (board: number[][]) => {
+  let isLine = 0;
+  const deletePos = [];
+  const linePos = [];
+  for (let row = 0; row < 20; row++) {
+    isLine = board[row].filter((cell) => cell !== 0).length;
+
+    if (isLine === 10) {
+      for (let y = 0; y < 20; y++) {
+        if (board[y].filter((cell) => cell !== 0).length === 10) {
+          linePos.push(y);
+        }
+      }
+      for (let x = 0; x < 10; x++) {
+        for (const row of linePos) deletePos.push([x, row]);
+      }
+
+      const deletedBoard: number[][] = changeBlock(board, deletePos, 0);
+      return deletedBoard;
+    }
+  }
+  return board;
+};
+
 const fallBlock = (board: number[][]) => {
   const position = [];
   const block = makeBlock(board);
@@ -48,7 +59,7 @@ const fallBlock = (board: number[][]) => {
       for (const [nx, ny] of block) {
         board[ny][nx] = 2;
       }
-      return board;
+      return deleteLine(board);
     }
   }
 
@@ -156,7 +167,9 @@ const moveRightBlock = (board: number[][]) => {
 
 const Home = () => {
   const [board, setBoard] = useState([
-    [0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -172,10 +185,8 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
-    [0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
+    [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
   ]);
 
   const keyHandler = (event: React.KeyboardEvent) => {
@@ -200,6 +211,7 @@ const Home = () => {
   };
   const downBlock = () => {
     const newBoard = fallBlock(board);
+
     setBoard(newBoard);
   };
   const leftBlock = () => {
