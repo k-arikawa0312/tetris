@@ -16,7 +16,9 @@ const changeBlock = (board: number[][], position: number[][], toChange: number) 
         deletePos.push([x, row]);
       }
       console.log(deletePos);
-      changeBlock(newBoard, deletePos, 0);
+
+      const deletedBoard: number[][] = changeBlock(newBoard, deletePos, 0);
+      return deletedBoard;
     }
   }
   console.table(newBoard);
