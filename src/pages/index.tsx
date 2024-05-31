@@ -32,57 +32,58 @@ const nextBlock = (board: number[][]) => {
     for (let n = 0; n < 7; n++) {
       sevenBlockBag.push(n);
     }
-    if (decideBlock === 0) {
-      const index = sevenBlockBag.indexOf(0);
-      sevenBlockBag.splice(index, 1);
-      board[0][5] = 1;
-      board[1][5] = 1;
-      board[1][6] = 1;
-      board[1][4] = 1; //T purple
-    } else if (decideBlock === 1) {
-      const index = sevenBlockBag.indexOf(1);
-      sevenBlockBag.splice(index, 1);
-      board[0][5] = 1;
-      board[1][5] = 1;
-      board[2][5] = 1;
-      board[3][5] = 1; //I waterblure
-    } else if (decideBlock === 2) {
-      const index = sevenBlockBag.indexOf(2);
-      sevenBlockBag.splice(index, 1);
-      board[0][5] = 1;
-      board[1][5] = 1;
-      board[1][4] = 1;
-      board[0][4] = 1; //o yellow
-    } else if (decideBlock === 3) {
-      const index = sevenBlockBag.indexOf(3);
-      sevenBlockBag.splice(index, 1);
-      board[0][4] = 1;
-      board[1][5] = 1;
-      board[1][6] = 1;
-      board[1][4] = 1; //j blue
-    } else if (decideBlock === 4) {
-      const index = sevenBlockBag.indexOf(4);
-      sevenBlockBag.splice(index, 1);
-      board[0][6] = 1;
-      board[1][5] = 1;
-      board[1][6] = 1;
-      board[1][4] = 1; //L orange
-    } else if (decideBlock === 5) {
-      const index = sevenBlockBag.indexOf(5);
-      sevenBlockBag.splice(index, 1);
-      board[0][5] = 1;
-      board[1][5] = 1;
-      board[0][6] = 1;
-      board[1][4] = 1; //s green
-    } else if (decideBlock === 6) {
-      const index = sevenBlockBag.indexOf(6);
-      sevenBlockBag.splice(index, 1);
-      board[0][5] = 1;
-      board[1][5] = 1;
-      board[0][4] = 1;
-      board[1][6] = 1; //z red
-    }
   }
+  if (decideBlock === 0) {
+    const index = sevenBlockBag.indexOf(0);
+    sevenBlockBag.splice(index, 1);
+    board[0][5] = 1;
+    board[1][5] = 1;
+    board[1][6] = 1;
+    board[1][4] = 1; //T purple
+  } else if (decideBlock === 1) {
+    const index = sevenBlockBag.indexOf(1);
+    sevenBlockBag.splice(index, 1);
+    board[0][5] = 1;
+    board[1][5] = 1;
+    board[2][5] = 1;
+    board[3][5] = 1; //I waterblure
+  } else if (decideBlock === 2) {
+    const index = sevenBlockBag.indexOf(2);
+    sevenBlockBag.splice(index, 1);
+    board[0][5] = 1;
+    board[1][5] = 1;
+    board[1][4] = 1;
+    board[0][4] = 1; //o yellow
+  } else if (decideBlock === 3) {
+    const index = sevenBlockBag.indexOf(3);
+    sevenBlockBag.splice(index, 1);
+    board[0][4] = 1;
+    board[1][5] = 1;
+    board[1][6] = 1;
+    board[1][4] = 1; //j blue
+  } else if (decideBlock === 4) {
+    const index = sevenBlockBag.indexOf(4);
+    sevenBlockBag.splice(index, 1);
+    board[0][6] = 1;
+    board[1][5] = 1;
+    board[1][6] = 1;
+    board[1][4] = 1; //L orange
+  } else if (decideBlock === 5) {
+    const index = sevenBlockBag.indexOf(5);
+    sevenBlockBag.splice(index, 1);
+    board[0][5] = 1;
+    board[1][5] = 1;
+    board[0][6] = 1;
+    board[1][4] = 1; //s green
+  } else if (decideBlock === 6) {
+    const index = sevenBlockBag.indexOf(6);
+    sevenBlockBag.splice(index, 1);
+    board[0][5] = 1;
+    board[1][5] = 1;
+    board[0][4] = 1;
+    board[1][6] = 1; //z red
+  }
+  return board;
 };
 
 const deleteLine = (board: number[][]) => {
