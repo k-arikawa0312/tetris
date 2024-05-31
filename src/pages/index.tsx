@@ -3,9 +3,23 @@ import React, { useState } from 'react';
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
+  let line = 0;
+  const deletePos = [];
   for (const [tx, ty] of position) {
     if (newBoard[ty] !== undefined) newBoard[ty][tx] = toChange;
   }
+  for (let row = 0; row < 20; row++) {
+    line = newBoard[row].filter((cell) => cell !== 0).length;
+    console.log(row, line);
+    if (line === 10) {
+      for (let x = 0; x < 10; x++) {
+        deletePos.push([x, row]);
+      }
+      console.log(deletePos);
+      changeBlock(newBoard, deletePos, 0);
+    }
+  }
+  console.table(newBoard);
   return newBoard;
 };
 
@@ -14,7 +28,7 @@ const makeBlock = (board: number[][]) => {
 
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
-      if (board[y][x] === 1) {
+      if (board[y]?.[x] === 1) {
         block.push([x, y]);
       }
     }
@@ -133,6 +147,11 @@ const moveRightBlock = (board: number[][]) => {
   return board;
 };
 
+// const turnBlock = (board: number[][]) => {
+//   const block = makeBlock(board);
+//   return block;
+// };
+
 const Home = () => {
   const [board, setBoard] = useState([
     [0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
@@ -153,7 +172,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 2, 2, 0, 0, 0, 0],
+    [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
     [0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
   ]);
 
@@ -169,6 +188,9 @@ const Home = () => {
     if (key === 'ArrowRight') {
       rightBlock();
     }
+    // if (key === 'ArrowUp') {
+    //   spinBlock();
+    // }
     if (key === ' ') {
       hardDrop();
     }
@@ -177,7 +199,6 @@ const Home = () => {
   const downBlock = () => {
     const newBoard = fallBlock(board);
     setBoard(newBoard);
-    return newBoard;
   };
   const leftBlock = () => {
     const newBoard = moveLeftBlock(board);
@@ -199,6 +220,10 @@ const Home = () => {
 
     setBoard(newBoard);
   };
+  // const spinBlock = () => {
+  //   const newBoard = turnBlock(board);
+  //   setBoard(newBoard);
+  // };
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
