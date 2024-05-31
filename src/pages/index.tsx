@@ -27,7 +27,7 @@ const makeBlock = (board: number[][]) => {
   return block;
 };
 const nextBlock = (board: number[][]) => {
-  const decideBlock = Math.floor(Math.random() * 7);
+  const decideBlock = Math.floor(Math.random() * sevenBlockBag.length);
   if (sevenBlockBag.length === 0) {
     for (let n = 0; n < 7; n++) {
       sevenBlockBag.push(n);
