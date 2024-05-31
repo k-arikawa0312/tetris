@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import React, { useEffect, useState } from 'react';
 
-const sevenBlockBag=[0,1,2,3,4,5,6]
+const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -10,7 +10,6 @@ const changeBlock = (board: number[][], position: number[][], toChange: number) 
     if (newBoard[ty] !== undefined) newBoard[ty][tx] = toChange;
   }
 
-  console.table(newBoard);
   return newBoard;
 };
 
@@ -27,11 +26,36 @@ const makeBlock = (board: number[][]) => {
 
   return block;
 };
-
-const nextBlock = ()=>{
-  const decideBlock = Math.floor(Math.random()*7)
-  if (decideBlock===1)
-}
+const nextBlock = () => {
+  const decideBlock = Math.floor(Math.random() * 7);
+  if (sevenBlockBag.length === 0) {
+    for (let n = 0; n < 7; n++) {
+      sevenBlockBag.push(n);
+    }
+    if (decideBlock === 0) {
+      const index = sevenBlockBag.indexOf(0);
+      sevenBlockBag.splice(index, 1);
+    } else if (decideBlock === 1) {
+      const index = sevenBlockBag.indexOf(1);
+      sevenBlockBag.splice(index, 1);
+    } else if (decideBlock === 2) {
+      const index = sevenBlockBag.indexOf(2);
+      sevenBlockBag.splice(index, 1);
+    } else if (decideBlock === 3) {
+      const index = sevenBlockBag.indexOf(3);
+      sevenBlockBag.splice(index, 1);
+    } else if (decideBlock === 4) {
+      const index = sevenBlockBag.indexOf(4);
+      sevenBlockBag.splice(index, 1);
+    } else if (decideBlock === 5) {
+      const index = sevenBlockBag.indexOf(5);
+      sevenBlockBag.splice(index, 1);
+    } else if (decideBlock === 6) {
+      const index = sevenBlockBag.indexOf(6);
+      sevenBlockBag.splice(index, 1);
+    }
+  }
+};
 
 const deleteLine = (board: number[][]) => {
   let isLine = 0;
@@ -196,6 +220,13 @@ const Home = () => {
     [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
     [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
   ]);
+
+  const [nextBlock, setNextBlock] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
   // const [seconds, setSeconds] = useState(0);
 
   // const isActive = 0;
@@ -211,6 +242,9 @@ const Home = () => {
     event.preventDefault();
     const key = event.key;
     if (key === 'ArrowDown') {
+      console.log(sevenBlockBag);
+      console.log(sevenBlockBag.indexOf(5));
+      console.log(sevenBlockBag.indexOf(3));
       downBlock();
     }
     if (key === 'ArrowLeft') {
