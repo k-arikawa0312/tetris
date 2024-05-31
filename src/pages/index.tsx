@@ -1,5 +1,7 @@
 import styles from './index.module.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+const sevenBlockBag=[0,1,2,3,4,5,6]
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -25,6 +27,11 @@ const makeBlock = (board: number[][]) => {
 
   return block;
 };
+
+const nextBlock = ()=>{
+  const decideBlock = Math.floor(Math.random()*7)
+  if (decideBlock===1)
+}
 
 const deleteLine = (board: number[][]) => {
   let isLine = 0;
@@ -184,10 +191,21 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
     [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
     [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
   ]);
+  // const [seconds, setSeconds] = useState(0);
+
+  // const isActive = 0;
+  // useEffect(() => {
+  //   let interval = 0;
+  //   interval = window.setInterval(() => {
+  //     setSeconds((prevSeconds) => prevSeconds + 1);
+  //     downBlock();
+  //   }, 1000);
+  // }, [isActive]);
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
