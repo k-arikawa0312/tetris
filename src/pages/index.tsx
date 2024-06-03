@@ -34,55 +34,58 @@ const nextBlock = (board: number[][]) => {
       sevenBlockBag.push(n);
     }
   }
-  if (decidedBlock === 0) {
-    const index = sevenBlockBag.indexOf(0);
-    sevenBlockBag.splice(index, 1);
-    board[0][5] = 1;
-    board[1][5] = 1;
-    board[1][6] = 1;
-    board[1][4] = 1; //T purple
-  } else if (decidedBlock === 1) {
-    const index = sevenBlockBag.indexOf(1);
-    sevenBlockBag.splice(index, 1);
-    board[0][5] = 1;
-    board[1][5] = 1;
-    board[2][5] = 1;
-    board[3][5] = 1; //I waterblure
-  } else if (decidedBlock === 2) {
-    const index = sevenBlockBag.indexOf(2);
-    sevenBlockBag.splice(index, 1);
-    board[0][5] = 1;
-    board[1][5] = 1;
-    board[1][4] = 1;
-    board[0][4] = 1; //o yellow
-  } else if (decidedBlock === 3) {
-    const index = sevenBlockBag.indexOf(3);
-    sevenBlockBag.splice(index, 1);
-    board[0][4] = 1;
-    board[1][5] = 1;
-    board[1][6] = 1;
-    board[1][4] = 1; //j blue
-  } else if (decidedBlock === 4) {
-    const index = sevenBlockBag.indexOf(4);
-    sevenBlockBag.splice(index, 1);
-    board[0][6] = 1;
-    board[1][5] = 1;
-    board[1][6] = 1;
-    board[1][4] = 1; //L orange
-  } else if (decidedBlock === 5) {
-    const index = sevenBlockBag.indexOf(5);
-    sevenBlockBag.splice(index, 1);
-    board[0][5] = 1;
-    board[1][5] = 1;
-    board[0][6] = 1;
-    board[1][4] = 1; //s green
-  } else if (decidedBlock === 6) {
-    const index = sevenBlockBag.indexOf(6);
-    sevenBlockBag.splice(index, 1);
-    board[0][5] = 1;
-    board[1][5] = 1;
-    board[0][4] = 1;
-    board[1][6] = 1; //z red
+
+  const index = sevenBlockBag.indexOf(decidedBlock);
+  switch (decidedBlock) {
+    case 0:
+      sevenBlockBag.splice(index, 1);
+      board[0][5] = 1;
+      board[1][5] = 1;
+      board[1][6] = 1;
+      board[1][4] = 1; //T purple
+      break;
+    case 1:
+      sevenBlockBag.splice(index, 1);
+      board[0][5] = 1;
+      board[1][5] = 1;
+      board[2][5] = 1;
+      board[3][5] = 1; //I waterblure
+      break;
+    case 2:
+      sevenBlockBag.splice(index, 1);
+      board[0][5] = 1;
+      board[1][5] = 1;
+      board[1][4] = 1;
+      board[0][4] = 1; //o yellow
+      break;
+    case 3:
+      sevenBlockBag.splice(index, 1);
+      board[0][4] = 1;
+      board[1][5] = 1;
+      board[1][6] = 1;
+      board[1][4] = 1; //j blue
+      break;
+    case 4:
+      sevenBlockBag.splice(index, 1);
+      board[0][6] = 1;
+      board[1][5] = 1;
+      board[1][6] = 1;
+      board[1][4] = 1; //L orange
+      break;
+    case 5:
+      sevenBlockBag.splice(index, 1);
+      board[0][5] = 1;
+      board[1][5] = 1;
+      board[0][6] = 1;
+      board[1][4] = 1; //s green
+      break;
+    case 6:
+      sevenBlockBag.splice(index, 1);
+      board[0][5] = 1;
+      board[1][5] = 1;
+      board[0][4] = 1;
+      board[1][6] = 1; //z red
+      break;
   }
   return board;
 };
@@ -230,11 +233,6 @@ const moveRightBlock = (board: number[][]) => {
   return board;
 };
 
-// const turnBlock = (board: number[][]) => {
-//   const block = makeBlock(board);
-//   return block;
-// };
-
 const Home = () => {
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -260,17 +258,6 @@ const Home = () => {
     [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
   ]);
 
-  // const [seconds, setSeconds] = useState(0);
-
-  // const isActive = 0;
-  // useEffect(() => {
-  //   let interval = 0;
-  //   interval = window.setInterval(() => {
-  //     setSeconds((prevSeconds) => prevSeconds + 1);
-  //     downBlock();
-  //   }, 1000);
-  // }, [isActive]);
-
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
     const key = event.key;
@@ -286,9 +273,7 @@ const Home = () => {
     if (key === 'ArrowRight') {
       rightBlock();
     }
-    // if (key === 'ArrowUp') {
-    //   spinBlock();
-    // }
+
     if (key === ' ') {
       hardDrop();
     }
@@ -319,10 +304,6 @@ const Home = () => {
 
     setBoard(newBoard);
   };
-  // const spinBlock = () => {
-  //   const newBoard = turnBlock(board);
-  //   setBoard(newBoard);
-  // };
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
