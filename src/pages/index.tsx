@@ -149,9 +149,10 @@ const fallBlock = (board: number[][]) => {
       for (const [nx, ny] of block) {
         board[ny][nx] = 2;
       }
-      const deletedBoard = deleteLine(board);
+      console.log(10);
+
       canChangeNextBlock = true;
-      return changeNextBlock(deletedBoard);
+      return board;
     }
   }
 
@@ -309,7 +310,8 @@ const Home = () => {
     const newBoard = fallBlock(board);
     console.log(canChangeNextBlock);
     if (canChangeNextBlock) {
-      setBoard(renewalBlock(board, nextBlock));
+      const deletedBoard = deleteLine(board);
+      setBoard(renewalBlock(deletedBoard, nextBlock));
       setNextBlock(changeNextBlock(nextBlock));
       canChangeNextBlock = false;
     } else {
