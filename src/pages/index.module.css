@@ -31,3 +31,11 @@
   height: 30px;
   background-color: aqua;
 }
+
+.nextBlockBoard {
+  display: flex;
+  flex-wrap: wrap;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 50px;
+}
