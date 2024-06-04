@@ -1,5 +1,5 @@
 import styles from './index.module.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
@@ -129,6 +129,7 @@ const deleteLine = (board: number[][]) => {
       for (let x = 0; x < 10; x++) {
         for (let y = 19; y >= 0; y--) {
           if (deletedBoard[y]?.[x] === 2 && y + linePos.length < 20) {
+            console.log(linePos.length);
             deletedBoard[y + linePos.length][x] = 2;
             deletedBoard[y][x] = 0;
           }
@@ -341,20 +342,37 @@ const Home = () => {
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
-      next block
-      <div className={styles.nextBlockBoard}>
-        {nextBlock.map((row, y) =>
-          row.map((display, x) => (
-            <div className={styles.cell} key={`${x}-${y}`}>
-              <div
-                className={styles.stone}
-                style={{
-                  background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                }}
-              />
-            </div>
-          )),
-        )}
+      <div>
+        next block
+        <div className={styles.nextBlockBoard}>
+          {nextBlock.map((row, y) =>
+            row.map((display, x) => (
+              <div className={styles.cell} key={`${x}-${y}`}>
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
+                  }}
+                />
+              </div>
+            )),
+          )}
+        </div>
+        hold block
+        <div className={styles.nextBlockBoard}>
+          {nextBlock.map((row, y) =>
+            row.map((display, x) => (
+              <div className={styles.cell} key={`${x}-${y}`}>
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
+                  }}
+                />
+              </div>
+            )),
+          )}
+        </div>
       </div>
       <div className={styles.backBoard}>
         {board.map((row, y) =>
