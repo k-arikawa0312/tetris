@@ -156,7 +156,6 @@ const fallBlock = (board: number[][]) => {
       for (const [nx, ny] of block) {
         board[ny][nx] = 2;
       }
-      console.log(10);
 
       canChangeNextBlock = true;
       return board;
@@ -177,6 +176,8 @@ const fallBlock = (board: number[][]) => {
         for (const [tx, ty] of block) {
           if (board[ty] !== undefined) {
             position.push([tx, ty + 1]);
+            console.log('removedown');
+
             board[ty][tx] = 0;
           }
         }
@@ -214,6 +215,8 @@ const moveLeftBlock = (board: number[][]) => {
         for (const [tx, ty] of block) {
           position.push([tx - 1, ty]);
           console.log(position);
+          console.log('removeleft');
+
           board[ty][tx] = 0;
         }
 
@@ -250,6 +253,8 @@ const moveRightBlock = (board: number[][]) => {
         }
         for (const [tx, ty] of block) {
           position.push([tx + 1, ty]);
+          console.log('removeright');
+
           board[ty][tx] = 0;
         }
 
@@ -318,7 +323,7 @@ const Home = () => {
       interval = window.setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds + 1);
         downBlock();
-      }, 1000);
+      }, 10000);
     }
 
     return () => clearInterval(interval);
@@ -327,13 +332,10 @@ const Home = () => {
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
-    console.table(board);
+
     if (!isActive) return;
     const key = event.key;
     if (key === 'ArrowDown') {
-      console.log(sevenBlockBag);
-      console.log(sevenBlockBag.indexOf(5));
-      console.log(sevenBlockBag.indexOf(3));
       downBlock();
     }
     if (key === 'ArrowLeft') {
@@ -393,6 +395,7 @@ const Home = () => {
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
+      <audio src="./tetris-bgm.mp3" loop />
       RemovedLine:{removedLine}
       <div>
         <label>next block</label>
