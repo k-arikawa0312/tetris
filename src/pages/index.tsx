@@ -29,12 +29,15 @@ const makeBlock = (board: number[][]) => {
   return block;
 };
 const changeNextBlock = (nextBlock: number[][]) => {
-  const decidedBlock = Math.floor(Math.random() * 7);
+  let decidedBlock = Math.floor(Math.random() * 7);
 
   if (sevenBlockBag.length === 0) {
     for (let n = 0; n < 7; n++) {
       sevenBlockBag.push(n);
     }
+  }
+  while (!sevenBlockBag.includes(decidedBlock)) {
+    decidedBlock = Math.floor(Math.random() * 7);
   }
 
   const index = sevenBlockBag.indexOf(decidedBlock);
@@ -105,7 +108,7 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   }
 
   for (const [x, y] of block) {
-    board[y - 2][x + 3] = 1;
+    board[y - 1][x + 3] = 1;
   }
   return board;
 };
