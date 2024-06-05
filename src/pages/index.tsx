@@ -286,6 +286,13 @@ const Home = () => {
     [0, 1, 0, 0],
   ]);
 
+  const [holdBlock, setHoldBlock] = useState([
+    [0, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0],
+  ]);
+
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
     const key = event.key;
@@ -304,6 +311,9 @@ const Home = () => {
 
     if (key === ' ') {
       hardDrop();
+    }
+    if (key === 'c') {
+      holdBlock;
     }
     return;
   };
@@ -336,44 +346,42 @@ const Home = () => {
       wasDropped = newBoard !== tempBoard;
       newBoard = tempBoard;
     } while (wasDropped);
-
     setBoard(newBoard);
   };
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
-      <div>
-        next block
-        <div className={styles.nextBlockBoard}>
-          {nextBlock.map((row, y) =>
-            row.map((display, x) => (
-              <div className={styles.cell} key={`${x}-${y}`}>
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                  }}
-                />
-              </div>
-            )),
-          )}
-        </div>
-        hold block
-        <div className={styles.nextBlockBoard}>
-          {nextBlock.map((row, y) =>
-            row.map((display, x) => (
-              <div className={styles.cell} key={`${x}-${y}`}>
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                  }}
-                />
-              </div>
-            )),
-          )}
-        </div>
+      <label>next block</label>
+      <div className={styles.nextBlockBoard}>
+        {nextBlock.map((row, y) =>
+          row.map((display, x) => (
+            <div className={styles.cell} key={`${x}-${y}`}>
+              <div
+                className={styles.stone}
+                style={{
+                  background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
+                }}
+              />
+            </div>
+          )),
+        )}
       </div>
+      <label>hold block</label>
+      <div className={styles.nextBlockBoard}>
+        {holdBlock.map((row, y) =>
+          row.map((display, x) => (
+            <div className={styles.cell} key={`${x}-${y}`}>
+              <div
+                className={styles.stone}
+                style={{
+                  background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
+                }}
+              />
+            </div>
+          )),
+        )}
+      </div>
+
       <div className={styles.backBoard}>
         {board.map((row, y) =>
           row.map((display, x) => (
