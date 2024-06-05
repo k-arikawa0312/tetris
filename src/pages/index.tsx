@@ -1,5 +1,5 @@
 import styles from './index.module.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
@@ -309,6 +309,7 @@ const Home = () => {
 
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
   // const [holdBlock, setHoldBlock] = useState([
   //   [0, 1, 0, 0],
   //   [0, 1, 0, 0],
@@ -322,13 +323,25 @@ const Home = () => {
     if (isActive) {
       interval = window.setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds + 1);
-        downBlock();
-      }, 10000);
+      }, 1000);
     }
 
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+    //  else {
+    //        if (audioRef.current !== null) audioRef.current.pause();
+    // }
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seconds, isActive]);
+  }, [isActive]);
+
+  useEffect(() => {
+    if (isActive) {
+      downBlock();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seconds]);
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
@@ -386,16 +399,12 @@ const Home = () => {
   };
 
   const switchOnOff = () => {
-    if (isActive) {
-      setIsActive(false);
-    } else {
-      setIsActive(true);
-    }
+    setIsActive(!isActive);
   };
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
-      <audio src="./tetris-bgm.mp3" loop />
+      <audio ref={audioRef} src="/tetris-bgm.mp3" loop />
       RemovedLine:{removedLine}
       <div>
         <label>next block</label>
@@ -414,12 +423,15 @@ const Home = () => {
           )}
         </div>
       </div>
-      <button
-        style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}
-        onClick={switchOnOff}
-      >
-        {isActive ? 'pause' : 'start'}
-      </button>
+      <div>
+        <button
+          style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}
+          onClick={switchOnOff}
+        >
+          {isActive ? 'pause' : 'start'}
+        </button>
+        <button style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}>sound</button>
+      </div>
       <div className={styles.board}>
         {board.map((row, y) =>
           row.map((display, x) => (
