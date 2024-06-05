@@ -303,6 +303,7 @@ const Home = () => {
   ]);
 
   const [isActive, setIsActive] = useState(false);
+  const [seconds, setSeconds] = useState(0);
   // const [holdBlock, setHoldBlock] = useState([
   //   [0, 1, 0, 0],
   //   [0, 1, 0, 0],
@@ -310,10 +311,23 @@ const Home = () => {
   //   [0, 1, 0, 0],
   // ]);
 
-  useEffect;
+  useEffect(() => {
+    let interval = 0;
+
+    if (isActive) {
+      interval = window.setInterval(() => {
+        setSeconds((prevSeconds) => prevSeconds + 1);
+        downBlock();
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seconds, isActive]);
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
+    console.table(board);
     if (!isActive) return;
     const key = event.key;
     if (key === 'ArrowDown') {
@@ -341,7 +355,7 @@ const Home = () => {
     const newBoard = fallBlock(board);
 
     if (canChangeNextBlock) {
-      const deletedBoard = deleteLine(board);
+      const deletedBoard = deleteLine(newBoard);
       setBoard(renewalBlock(deletedBoard, nextBlock));
       setNextBlock(changeNextBlock(nextBlock));
       canChangeNextBlock = false;
