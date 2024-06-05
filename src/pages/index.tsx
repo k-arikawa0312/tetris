@@ -326,9 +326,11 @@ const Home = () => {
       }, 1000);
     }
 
-    if (audioRef.current) {
+    if (audioRef.current !== null) {
+      console.log(330);
       audioRef.current.play();
     }
+
     //  else {
     //        if (audioRef.current !== null) audioRef.current.pause();
     // }
@@ -349,6 +351,7 @@ const Home = () => {
     if (!isActive) return;
     const key = event.key;
     if (key === 'ArrowDown') {
+      console.log(audioRef);
       downBlock();
     }
     if (key === 'ArrowLeft') {
@@ -404,7 +407,6 @@ const Home = () => {
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
-      <audio ref={audioRef} src="/tetris-bgm.mp3" loop />
       RemovedLine:{removedLine}
       <div>
         <label>next block</label>
@@ -446,6 +448,7 @@ const Home = () => {
           )),
         )}
       </div>
+      <audio ref={audioRef} src="./bgm.mp3" loop />
     </div>
   );
 };
