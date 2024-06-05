@@ -302,6 +302,7 @@ const Home = () => {
     [0, 0, 0, 0],
   ]);
 
+  const [isActive, setIsActive] = useState(false);
   // const [holdBlock, setHoldBlock] = useState([
   //   [0, 1, 0, 0],
   //   [0, 1, 0, 0],
@@ -313,6 +314,7 @@ const Home = () => {
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
+    if (!isActive) return;
     const key = event.key;
     if (key === 'ArrowDown') {
       console.log(sevenBlockBag);
@@ -367,11 +369,19 @@ const Home = () => {
     setBoard(newBoard);
   };
 
+  const switchOnOff = () => {
+    if (isActive) {
+      setIsActive(false);
+    } else {
+      setIsActive(true);
+    }
+  };
+
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
       RemovedLine:{removedLine}
       <div>
-        <label>next block{}</label>
+        <label>next block</label>
         <div className={styles.nextBlockBoard}>
           {nextBlock.map((row, y) =>
             row.map((display, x) => (
@@ -387,6 +397,12 @@ const Home = () => {
           )}
         </div>
       </div>
+      <button
+        style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}
+        onClick={switchOnOff}
+      >
+        {isActive ? 'pause' : 'start'}
+      </button>
       <div className={styles.board}>
         {board.map((row, y) =>
           row.map((display, x) => (
