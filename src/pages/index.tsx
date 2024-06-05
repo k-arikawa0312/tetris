@@ -1,8 +1,9 @@
 import styles from './index.module.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
+let removedLine = 0;
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -40,53 +41,53 @@ const changeNextBlock = (nextBlock: number[][]) => {
   switch (decidedBlock) {
     case 0:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][2] = 1;
       nextBlock[1][2] = 1;
-      nextBlock[1][3] = 1;
-      nextBlock[1][1] = 1; //T purple
+      nextBlock[2][2] = 1;
+      nextBlock[2][3] = 1;
+      nextBlock[1][1] = 1; //Z red
 
       break;
     case 1:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][2] = 1;
+      nextBlock[1][0] = 1;
+      nextBlock[1][1] = 1;
       nextBlock[1][2] = 1;
-      nextBlock[2][2] = 1;
-      nextBlock[3][2] = 1; //I waterblure
+      nextBlock[1][3] = 1; //I waterblue
       break;
     case 2:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][2] = 1;
+      nextBlock[2][2] = 1;
       nextBlock[1][2] = 1;
       nextBlock[1][1] = 1;
-      nextBlock[0][1] = 1; //o yellow
+      nextBlock[2][1] = 1; //o yellow
       break;
     case 3:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][1] = 1;
-      nextBlock[1][2] = 1;
-      nextBlock[1][3] = 1;
-      nextBlock[1][1] = 1; //j blue
+      nextBlock[1][1] = 1;
+      nextBlock[2][2] = 1;
+      nextBlock[2][3] = 1;
+      nextBlock[2][1] = 1; //j blue
       break;
     case 4:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][3] = 1;
-      nextBlock[1][2] = 1;
       nextBlock[1][3] = 1;
-      nextBlock[1][1] = 1; //L orange
+      nextBlock[2][2] = 1;
+      nextBlock[2][3] = 1;
+      nextBlock[2][1] = 1; //L orange
       break;
     case 5:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][2] = 1;
       nextBlock[1][2] = 1;
-      nextBlock[0][3] = 1;
-      nextBlock[1][1] = 1; //s green
+      nextBlock[2][2] = 1;
+      nextBlock[1][3] = 1;
+      nextBlock[2][1] = 1; //s green
       break;
     case 6:
       sevenBlockBag.splice(index, 1);
-      nextBlock[0][2] = 1;
       nextBlock[1][2] = 1;
-      nextBlock[0][1] = 1;
-      nextBlock[1][1] = 1; //z red
+      nextBlock[2][2] = 1;
+      nextBlock[2][3] = 1;
+      nextBlock[2][1] = 1; //T purple
       break;
   }
   return nextBlock;
@@ -102,8 +103,9 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
       }
     }
   }
+
   for (const [x, y] of block) {
-    board[y][x + 3] = 1;
+    board[y - 2][x + 3] = 1;
   }
   return board;
 };
@@ -119,6 +121,7 @@ const deleteLine = (board: number[][]) => {
       for (let y = 0; y < 20; y++) {
         if (board[y].filter((cell) => cell !== 0).length === 10) {
           linePos.push(y);
+          removedLine += 1;
         }
       }
       for (let x = 0; x < 10; x++) {
@@ -129,7 +132,7 @@ const deleteLine = (board: number[][]) => {
       for (let x = 0; x < 10; x++) {
         for (let y = 19; y >= 0; y--) {
           if (deletedBoard[y]?.[x] === 2 && y + linePos.length < 20) {
-            console.log(linePos.length);
+            console.log('linePos', linePos.length);
             deletedBoard[y + linePos.length][x] = 2;
             deletedBoard[y][x] = 0;
           }
@@ -254,6 +257,16 @@ const moveRightBlock = (board: number[][]) => {
   return board;
 };
 
+// const saveBlock = (board: number[][], holdBlock: number[][]) => {
+//   for (let x = 0; x < 10; x++) {
+//     for (let y = 0; y < 20; y++) {
+//       if (board[y].filter((cell) => cell === 0).length === 10) {
+//         board.splice(y, 1);
+//       }
+//     }
+//   }
+// };
+
 const Home = () => {
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -280,18 +293,20 @@ const Home = () => {
   ]);
 
   const [nextBlock, setNextBlock] = useState([
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 1, 0],
+    [0, 1, 1, 1],
+    [0, 0, 0, 0],
   ]);
 
-  const [holdBlock, setHoldBlock] = useState([
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
-    [0, 1, 0, 0],
-  ]);
+  // const [holdBlock, setHoldBlock] = useState([
+  //   [0, 1, 0, 0],
+  //   [0, 1, 0, 0],
+  //   [0, 1, 0, 0],
+  //   [0, 1, 0, 0],
+  // ]);
+
+  useEffect;
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
@@ -313,13 +328,13 @@ const Home = () => {
       hardDrop();
     }
     if (key === 'c') {
-      holdBlock;
+      console.log('c');
     }
     return;
   };
   const downBlock = () => {
     const newBoard = fallBlock(board);
-    console.log(canChangeNextBlock);
+
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(board);
       setBoard(renewalBlock(deletedBoard, nextBlock));
@@ -351,25 +366,11 @@ const Home = () => {
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
-      <div className={styles.topArea}>
-        <label>next block</label>
+      RemovedLine:{removedLine}
+      <div>
+        <label>next block{}</label>
         <div className={styles.nextBlockBoard}>
           {nextBlock.map((row, y) =>
-            row.map((display, x) => (
-              <div className={styles.cell} key={`${x}-${y}`}>
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                  }}
-                />
-              </div>
-            )),
-          )}
-        </div>
-        <label>hold block</label>
-        <div className={styles.nextBlockBoard}>
-          {holdBlock.map((row, y) =>
             row.map((display, x) => (
               <div className={styles.cell} key={`${x}-${y}`}>
                 <div
