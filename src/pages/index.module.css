@@ -10,7 +10,7 @@
   padding: 0 0.5rem;
 }
 
-.backBoard {
+.board {
   display: flex;
   flex-wrap: wrap;
   width: 300px;
@@ -37,5 +37,11 @@
   flex-wrap: wrap;
   width: 120px;
   height: 120px;
+  margin-right: 50px;
   margin-bottom: 50px;
+}
+
+.topArea {
+  display: flex;
+  flex-direction: row;
 }

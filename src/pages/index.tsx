@@ -351,38 +351,39 @@ const Home = () => {
 
   return (
     <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
-      <label>next block</label>
-      <div className={styles.nextBlockBoard}>
-        {nextBlock.map((row, y) =>
-          row.map((display, x) => (
-            <div className={styles.cell} key={`${x}-${y}`}>
-              <div
-                className={styles.stone}
-                style={{
-                  background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                }}
-              />
-            </div>
-          )),
-        )}
+      <div className={styles.topArea}>
+        <label>next block</label>
+        <div className={styles.nextBlockBoard}>
+          {nextBlock.map((row, y) =>
+            row.map((display, x) => (
+              <div className={styles.cell} key={`${x}-${y}`}>
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
+                  }}
+                />
+              </div>
+            )),
+          )}
+        </div>
+        <label>hold block</label>
+        <div className={styles.nextBlockBoard}>
+          {holdBlock.map((row, y) =>
+            row.map((display, x) => (
+              <div className={styles.cell} key={`${x}-${y}`}>
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
+                  }}
+                />
+              </div>
+            )),
+          )}
+        </div>
       </div>
-      <label>hold block</label>
-      <div className={styles.nextBlockBoard}>
-        {holdBlock.map((row, y) =>
-          row.map((display, x) => (
-            <div className={styles.cell} key={`${x}-${y}`}>
-              <div
-                className={styles.stone}
-                style={{
-                  background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                }}
-              />
-            </div>
-          )),
-        )}
-      </div>
-
-      <div className={styles.backBoard}>
+      <div className={styles.board}>
         {board.map((row, y) =>
           row.map((display, x) => (
             <div className={styles.cell} key={`${x}-${y}`}>
