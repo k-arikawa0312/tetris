@@ -4,34 +4,34 @@ import React, { useEffect, useState, useRef } from 'react';
 const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
 let removedLine = 0;
-const tetrisMino = [
-  [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
+// const tetrisMino = [
+//   [
+//     [0, 1, 0],
+//     [1, 1, 1],
+//   ],
 
-  [[1, 1, 1, 1]],
-  [
-    [1, 1],
-    [1, 1],
-  ],
-  [
-    [1, 0, 0],
-    [1, 1, 1],
-  ],
-  [
-    [0, 0, 1],
-    [1, 1, 1],
-  ],
-  [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-];
+//   [[1, 1, 1, 1]],
+//   [
+//     [1, 1],
+//     [1, 1],
+//   ],
+//   [
+//     [1, 0, 0],
+//     [1, 1, 1],
+//   ],
+//   [
+//     [0, 0, 1],
+//     [1, 1, 1],
+//   ],
+//   [
+//     [0, 1, 1],
+//     [1, 1, 0],
+//   ],
+//   [
+//     [1, 1, 0],
+//     [0, 1, 1],
+//   ],
+// ];
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -59,6 +59,8 @@ const makeBlock = (board: number[][]) => {
 const changeNextBlock = (nextBlock: number[][]) => {
   let decidedBlock = Math.floor(Math.random() * 7);
   const newNextBlock = structuredClone(nextBlock);
+  newNextBlock.fill([0, 0, 3]);
+  console.log(newNextBlock);
 
   if (sevenBlockBag.length === 0) {
     for (let n = 0; n < 7; n++) {
@@ -74,44 +76,44 @@ const changeNextBlock = (nextBlock: number[][]) => {
   switch (decidedBlock) {
     case 0:
       sevenBlockBag.splice(index, 1);
-      nextBlock[1][2] = 1;
-      nextBlock[2][2] = 1;
-      nextBlock[2][3] = 1;
-      nextBlock[1][1] = 1; //Z red
+      newNextBlock[1][2] = 1;
+      newNextBlock[2][2] = 1;
+      newNextBlock[2][3] = 1;
+      newNextBlock[1][1] = 1; //Z red
 
       break;
     case 1:
       sevenBlockBag.splice(index, 1);
-      nextBlock[1][0] = 1;
-      nextBlock[1][1] = 1;
-      nextBlock[1][2] = 1;
-      nextBlock[1][3] = 1; //I waterblue
+      newNextBlock[1][0] = 1;
+      newNextBlock[1][1] = 1;
+      newNextBlock[1][2] = 1;
+      newNextBlock[1][3] = 1; //I waterblue
       break;
     case 2:
       sevenBlockBag.splice(index, 1);
-      nextBlock[2][2] = 1;
-      nextBlock[1][2] = 1;
-      nextBlock[1][1] = 1;
-      nextBlock[2][1] = 1; //o yellow
+      newNextBlock[2][2] = 1;
+      newNextBlock[1][2] = 1;
+      newNextBlock[1][1] = 1;
+      newNextBlock[2][1] = 1; //o yellow
       break;
     case 3:
       sevenBlockBag.splice(index, 1);
-      nextBlock[1][1] = 1;
-      nextBlock[2][2] = 1;
-      nextBlock[2][3] = 1;
-      nextBlock[2][1] = 1; //j blue
+      newNextBlock[1][1] = 1;
+      newNextBlock[2][2] = 1;
+      newNextBlock[2][3] = 1;
+      newNextBlock[2][1] = 1; //j blue
       break;
     case 4:
       sevenBlockBag.splice(index, 1);
-      nextBlock[1][3] = 1;
-      nextBlock[2][2] = 1;
-      nextBlock[2][3] = 1;
-      nextBlock[2][1] = 1; //L orange
+      newNextBlock[1][3] = 1;
+      newNextBlock[2][2] = 1;
+      newNextBlock[2][3] = 1;
+      newNextBlock[2][1] = 1; //L orange
       break;
     case 5:
       sevenBlockBag.splice(index, 1);
-      nextBlock[1][2] = 1;
-      nextBlock[2][2] = 1;
+      newNextBlock[1][2] = 1;
+      newNextBlock[2][2] = 1;
       newNextBlock[1][3] = 1;
       newNextBlock[2][1] = 1; //s green
       break;
@@ -128,19 +130,21 @@ const changeNextBlock = (nextBlock: number[][]) => {
 
 const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   const block = [];
+  const newBoard = structuredClone(board);
+  const newNextBlock = structuredClone(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] === 1) {
         block.push([x, y]);
-        nextBlock[y][x] = 0;
+        newNextBlock[y][x] = 0;
       }
     }
   }
 
   for (const [x, y] of block) {
-    board[y - 1][x + 3] = 1;
+    newBoard[y - 1][x + 3] = 1;
   }
-  return board;
+  return newBoard;
 };
 
 const deleteLine = (board: number[][]) => {
@@ -179,16 +183,17 @@ const deleteLine = (board: number[][]) => {
 
 const fallBlock = (board: number[][]) => {
   const position = [];
-  const block = makeBlock(board);
+  const newBoard = structuredClone(board);
+  const block = makeBlock(newBoard);
 
   for (const [tx, ty] of block) {
     if (ty === 19 || tx === -1 || board[ty + 1]?.[tx] === 2) {
       for (const [nx, ny] of block) {
-        board[ny][nx] = 2;
+        newBoard[ny][nx] = 2;
       }
 
       canChangeNextBlock = true;
-      return board;
+      return newBoard;
     }
   }
 
@@ -208,25 +213,27 @@ const fallBlock = (board: number[][]) => {
             position.push([tx, ty + 1]);
             console.log('removedown');
 
-            board[ty][tx] = 0;
+            newBoard[ty][tx] = 0;
           }
         }
-        return changeBlock(board, position, 1);
+        return changeBlock(newBoard, position, 1);
       }
     }
   }
-  return board;
+  console.log(44455);
+  return newBoard;
 };
 
 const moveLeftBlock = (board: number[][]) => {
   const position = [];
   const block = makeBlock(board);
+  const newBoard = structuredClone(board);
   for (let x = 20; x >= 0; x--) {
     for (let y = 0; y < 20; y++) {
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
-        board[y]?.[x - 1] !== 2 &&
+        newBoard[y]?.[x - 1] !== 2 &&
         block[0]?.[0] !== 0 &&
         block[1]?.[0] !== 0 &&
         block[2]?.[0] !== 0 &&
@@ -247,10 +254,10 @@ const moveLeftBlock = (board: number[][]) => {
           console.log(position);
           console.log('removeleft');
 
-          board[ty][tx] = 0;
+          newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(board, position, 1);
+        return changeBlock(newBoard, position, 1);
       }
     }
   }
@@ -260,12 +267,13 @@ const moveLeftBlock = (board: number[][]) => {
 const moveRightBlock = (board: number[][]) => {
   const position = [];
   const block = makeBlock(board);
+  const newBoard = structuredClone(board);
   for (let x = 0; x < 20; x++) {
     for (let y = 0; y < 20; y++) {
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
-        board[y]?.[x + 1] !== 2 &&
+        newBoard[y]?.[x + 1] !== 2 &&
         block[0]?.[0] !== 9 &&
         block[1]?.[0] !== 9 &&
         block[2]?.[0] !== 9 &&
@@ -279,21 +287,33 @@ const moveRightBlock = (board: number[][]) => {
           }
         }
         if (noRightBlock !== 0) {
-          return board;
+          return newBoard;
         }
         for (const [tx, ty] of block) {
           position.push([tx + 1, ty]);
           console.log('removeright');
 
-          board[ty][tx] = 0;
+          newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(board, position, 1);
+        return changeBlock(newBoard, position, 1);
       }
     }
   }
   return board;
 };
+// const turnBlock = (block: number[][]) => {
+//   const rows = block.length;
+//   const cols = block[0].length;
+//   const toMove = Array.from({ length: cols }, () => Array(rows).fill(0));
+
+//   for (let y = 0; y < rows; y++) {
+//     for (let x = 0; x < cols; x++) {
+//       toMove[x][rows - y - 1] = block[y][x];
+//     }
+//   }
+//   return toMove;
+// };
 
 // const saveBlock = (board: number[][], holdBlock: number[][]) => {
 //   for (let x = 0; x < 10; x++) {
@@ -345,7 +365,7 @@ const Home = () => {
   // ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const [kindOfMino, setKindOfMino] = useState(0);
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -392,6 +412,9 @@ const Home = () => {
     if (key === 'ArrowRight') {
       rightBlock();
     }
+    if (key === 'ArrowUp') {
+      spinBlock();
+    }
 
     if (key === ' ') {
       hardDrop();
@@ -408,6 +431,12 @@ const Home = () => {
 
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
+      setNextBlock([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ]);
       setBoard(renewalBlock(deletedBoard, nextBlock));
       setNextBlock(changeNextBlock(nextBlock));
       canChangeNextBlock = false;
@@ -429,10 +458,16 @@ const Home = () => {
 
     do {
       const tempBoard = fallBlock(newBoard);
+      console.log(77);
       wasDropped = newBoard !== tempBoard;
       newBoard = tempBoard;
     } while (wasDropped);
     setBoard(newBoard);
+  };
+  const spinBlock = () => {
+    // const block = makeBlock(board);
+    // const turnedBlock = turnBlock(block);
+    // setBoard(turnedBlock);
   };
 
   const switchOnOff = () => {
