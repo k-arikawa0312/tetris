@@ -4,6 +4,34 @@ import React, { useEffect, useState, useRef } from 'react';
 const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
 let removedLine = 0;
+const tetrisMino = [
+  [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+
+  [[1, 1, 1, 1]],
+  [
+    [1, 1],
+    [1, 1],
+  ],
+  [
+    [1, 0, 0],
+    [1, 1, 1],
+  ],
+  [
+    [0, 0, 1],
+    [1, 1, 1],
+  ],
+  [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
+  [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+];
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -30,6 +58,7 @@ const makeBlock = (board: number[][]) => {
 };
 const changeNextBlock = (nextBlock: number[][]) => {
   let decidedBlock = Math.floor(Math.random() * 7);
+  const newNextBlock = structuredClone(nextBlock);
 
   if (sevenBlockBag.length === 0) {
     for (let n = 0; n < 7; n++) {
@@ -41,6 +70,7 @@ const changeNextBlock = (nextBlock: number[][]) => {
   }
 
   const index = sevenBlockBag.indexOf(decidedBlock);
+
   switch (decidedBlock) {
     case 0:
       sevenBlockBag.splice(index, 1);
@@ -82,18 +112,18 @@ const changeNextBlock = (nextBlock: number[][]) => {
       sevenBlockBag.splice(index, 1);
       nextBlock[1][2] = 1;
       nextBlock[2][2] = 1;
-      nextBlock[1][3] = 1;
-      nextBlock[2][1] = 1; //s green
+      newNextBlock[1][3] = 1;
+      newNextBlock[2][1] = 1; //s green
       break;
     case 6:
       sevenBlockBag.splice(index, 1);
-      nextBlock[1][2] = 1;
-      nextBlock[2][2] = 1;
-      nextBlock[2][3] = 1;
-      nextBlock[2][1] = 1; //T purple
+      newNextBlock[1][2] = 1;
+      newNextBlock[2][2] = 1;
+      newNextBlock[2][3] = 1;
+      newNextBlock[2][1] = 1; //T purple
       break;
   }
-  return nextBlock;
+  return newNextBlock;
 };
 
 const renewalBlock = (board: number[][], nextBlock: number[][]) => {
@@ -307,15 +337,16 @@ const Home = () => {
     [0, 0, 0, 0],
   ]);
 
-  const [isActive, setIsActive] = useState(false);
-  const [seconds, setSeconds] = useState(0);
-  const audioRef = useRef<HTMLAudioElement>(null);
   // const [holdBlock, setHoldBlock] = useState([
   //   [0, 1, 0, 0],
   //   [0, 1, 0, 0],
   //   [0, 1, 0, 0],
   //   [0, 1, 0, 0],
   // ]);
+  const [isActive, setIsActive] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [kindOfMino, setKindOfMino] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     let interval = 0;
@@ -331,17 +362,18 @@ const Home = () => {
       audioRef.current.play();
     }
 
-    //  else {
-    //        if (audioRef.current !== null) audioRef.current.pause();
-    // }
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
   useEffect(() => {
+    let isDropping = true;
+
     if (isActive) {
-      downBlock();
+      downBlock(!isDropping);
+      isDropping = false;
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
@@ -352,7 +384,7 @@ const Home = () => {
     const key = event.key;
     if (key === 'ArrowDown') {
       console.log(audioRef);
-      downBlock();
+      downBlock(false);
     }
     if (key === 'ArrowLeft') {
       leftBlock();
@@ -369,7 +401,9 @@ const Home = () => {
     }
     return;
   };
-  const downBlock = () => {
+  const downBlock = (isDropping: boolean) => {
+    console.log(5555, isDropping);
+    if (isDropping) return board;
     const newBoard = fallBlock(board);
 
     if (canChangeNextBlock) {
@@ -406,7 +440,7 @@ const Home = () => {
   };
 
   return (
-    <div className={styles.container} onKeyDown={keyHandler} onKeyPress={downBlock} tabIndex={0}>
+    <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       RemovedLine:{removedLine}
       <div>
         <label>next block</label>
