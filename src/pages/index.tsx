@@ -59,7 +59,11 @@ const makeBlock = (board: number[][]) => {
 const changeNextBlock = (nextBlock: number[][]) => {
   let decidedBlock = Math.floor(Math.random() * 7);
   const newNextBlock = structuredClone(nextBlock);
-  newNextBlock.fill([0, 0, 3]);
+  for (let x = 0; x < 4; x++) {
+    for (let y = 0; y < 4; y++) {
+      newNextBlock[y][x] = 0;
+    }
+  }
   console.log(newNextBlock);
 
   if (sevenBlockBag.length === 0) {
@@ -151,6 +155,7 @@ const deleteLine = (board: number[][]) => {
   let isLine = 0;
   const deletePos = [];
   const linePos = [];
+  const newBoard = structuredClone(board);
   for (let row = 0; row < 20; row++) {
     isLine = board[row].filter((cell) => cell !== 0).length;
 
@@ -165,7 +170,7 @@ const deleteLine = (board: number[][]) => {
         for (const row of linePos) deletePos.push([x, row]);
       }
 
-      const deletedBoard: number[][] = changeBlock(board, deletePos, 0);
+      const deletedBoard: number[][] = changeBlock(newBoard, deletePos, 0);
       for (let x = 0; x < 10; x++) {
         for (let y = 19; y >= 0; y--) {
           if (deletedBoard[y]?.[x] === 2 && y + linePos.length < 20) {
@@ -226,8 +231,8 @@ const fallBlock = (board: number[][]) => {
 
 const moveLeftBlock = (board: number[][]) => {
   const position = [];
-  const block = makeBlock(board);
   const newBoard = structuredClone(board);
+  const block = makeBlock(newBoard);
   for (let x = 20; x >= 0; x--) {
     for (let y = 0; y < 20; y++) {
       if (
