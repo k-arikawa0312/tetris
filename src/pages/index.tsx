@@ -45,7 +45,6 @@ const changeBlock = (board: number[][], position: number[][], toChange: number) 
 
 const makeBlock = (board: number[][]) => {
   const block = [];
-
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
       if (board[y]?.[x] === 1) {
@@ -64,7 +63,6 @@ const changeNextBlock = (nextBlock: number[][]) => {
       newNextBlock[y][x] = 0;
     }
   }
-  console.log(newNextBlock);
 
   if (sevenBlockBag.length === 0) {
     for (let n = 0; n < 7; n++) {
@@ -190,13 +188,12 @@ const fallBlock = (board: number[][]) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
-
   for (const [tx, ty] of block) {
-    if (ty === 19 || tx === -1 || board[ty + 1]?.[tx] === 2) {
+    if (ty === 19 || tx === -1 || newBoard[ty + 1]?.[tx] === 2) {
       for (const [nx, ny] of block) {
         newBoard[ny][nx] = 2;
       }
-
+      console.log(1999);
       canChangeNextBlock = true;
       return newBoard;
     }
@@ -207,7 +204,7 @@ const fallBlock = (board: number[][]) => {
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
-        board[y + 1]?.[x] !== 2 &&
+        newBoard[y + 1]?.[x] !== 2 &&
         block[0][0] !== 19 &&
         block[0][1] !== 19 &&
         block[0][2] !== 19 &&
@@ -463,8 +460,9 @@ const Home = () => {
 
     do {
       const tempBoard = fallBlock(newBoard);
-      console.log(77);
+
       wasDropped = newBoard !== tempBoard;
+
       newBoard = tempBoard;
     } while (wasDropped);
     setBoard(newBoard);
