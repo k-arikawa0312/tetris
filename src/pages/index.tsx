@@ -4,34 +4,36 @@ import React, { useEffect, useState, useRef } from 'react';
 const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
 let removedLine = 0;
-// const tetrisMino = [
-//   [
-//     [0, 1, 0],
-//     [1, 1, 1],
-//   ],
+const tetrisMino = [
+  [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
 
-//   [[1, 1, 1, 1]],
-//   [
-//     [1, 1],
-//     [1, 1],
-//   ],
-//   [
-//     [1, 0, 0],
-//     [1, 1, 1],
-//   ],
-//   [
-//     [0, 0, 1],
-//     [1, 1, 1],
-//   ],
-//   [
-//     [0, 1, 1],
-//     [1, 1, 0],
-//   ],
-//   [
-//     [1, 1, 0],
-//     [0, 1, 1],
-//   ],
-// ];
+  [[1, 1, 1, 1]],
+  [
+    [1, 1],
+    [1, 1],
+  ],
+  [
+    [1, 0, 0],
+    [1, 1, 1],
+  ],
+  [
+    [0, 0, 1],
+    [1, 1, 1],
+  ],
+  [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
+  [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+];
+
+//中心座標を計算してここから回転先を作りそれを適応
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -304,17 +306,24 @@ const moveRightBlock = (board: number[][]) => {
   }
   return board;
 };
-// const turnBlock = (block: number[][]) => {
-//   const rows = block.length;
-//   const cols = block[0].length;
-//   const toMove = Array.from({ length: cols }, () => Array(rows).fill(0));
 
-//   for (let y = 0; y < rows; y++) {
-//     for (let x = 0; x < cols; x++) {
-//       toMove[x][rows - y - 1] = block[y][x];
-//     }
-//   }
-//   return toMove;
+const rotateMatrix = (matrix: number[][]) => {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const rotated = Array.from({ length: cols }, () => Array(rows).fill(0));
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      rotated[x][rows - y - 1] = matrix[y][x];
+    }
+  }
+  return rotated;
+};
+
+// const turnBlock = () => {
+//   const rotatedTetromino = rotateMatrix(tetromino);
+//   setTetromino(rotatedTetromino);
+//   const newBoard = placeTetromino(board, rotatedTetromino, position);
+//   setBoard(newBoard);
 // };
 
 // const saveBlock = (board: number[][], holdBlock: number[][]) => {
@@ -427,18 +436,12 @@ const Home = () => {
     return;
   };
   const downBlock = (isDropping: boolean) => {
-    console.log(5555, isDropping);
     if (isDropping) return board;
     const newBoard = fallBlock(board);
 
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
-      setNextBlock([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ]);
+
       setBoard(renewalBlock(deletedBoard, nextBlock));
       setNextBlock(changeNextBlock(nextBlock));
       canChangeNextBlock = false;
@@ -524,5 +527,6 @@ const Home = () => {
     </div>
   );
 };
+//動いてるやつ10足す動いてないやつ１０引く
 
 export default Home;
