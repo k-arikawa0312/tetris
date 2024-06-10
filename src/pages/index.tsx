@@ -48,7 +48,7 @@ const makeBlock = (board: number[][]) => {
   const block = [];
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
-      if (board[y]?.[x] < 11 && board[y]?.[x] !== 0) {
+      if (board[y]?.[x] < 10 && board[y]?.[x] !== 0) {
         block.push([x, y]);
       }
     }
@@ -115,16 +115,21 @@ const renewalBlock = (board: number[][], nextBlock: number[][], kindOfBlock: num
   const block = [];
   const newBoard = structuredClone(board);
   const newNextBlock = structuredClone(nextBlock);
+  console.table(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] !== 0) {
         block.push([x, y]);
         newNextBlock[y][x] = 0;
+        console.log('asdd');
       }
     }
   }
 
+  console.log(41655220);
+  console.log(block);
   for (const [x, y] of block) {
+    console.log(4111);
     newBoard[y - 1][x + 3] = kindOfBlock + 1;
   }
   return newBoard;
@@ -169,8 +174,9 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
+  console.log(block);
   for (const [tx, ty] of block) {
-    if (ty === 19 || tx === -1 || (newBoard[ty]?.[tx] < 11 && newBoard[ty][tx] !== 0)) {
+    if (ty === 19 || tx === -1 || newBoard[ty + 1]?.[tx] >= 11) {
       for (const [nx, ny] of block) {
         newBoard[ny][nx] = newBoard[ny][nx] + 10;
       }
@@ -198,11 +204,10 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
             newBoard[ty][tx] = 0;
           }
         }
-        return changeBlock(newBoard, position, kindOfBlock);
+        return changeBlock(newBoard, position, kindOfBlock + 1);
       }
     }
   }
-  console.log(44455);
   return newBoard;
 };
 
@@ -239,7 +244,7 @@ const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, kindOfBlock);
+        return changeBlock(newBoard, position, kindOfBlock + 1);
       }
     }
   }
@@ -278,7 +283,7 @@ const moveRightBlock = (board: number[][], kindOfBlock: number) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, kindOfBlock);
+        return changeBlock(newBoard, position, kindOfBlock + 1);
       }
     }
   }
@@ -335,15 +340,16 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 0, 2],
+    [11, 12, 13, 14, 15, 16, 17, 11, 0, 14],
+    [11, 12, 13, 14, 15, 16, 17, 12, 0, 15],
+    [11, 12, 13, 14, 15, 16, 17, 13, 0, 16],
   ]);
 
+  const [kindOfBlock, setKindOfBlock] = useState(Math.floor(Math.random() * 7));
   const [nextBlock, setNextBlock] = useState([
     [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [0, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]);
 
@@ -355,8 +361,7 @@ const Home = () => {
   // ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const [kindOfBlock, setKindOfBlock] = useState(0);
-  const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
+  const sevenBlockBag: number[] = [];
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -370,7 +375,6 @@ const Home = () => {
     }
 
     if (audioRef.current !== null) {
-      console.log(330);
       audioRef.current.play();
     }
 
@@ -405,7 +409,8 @@ const Home = () => {
       rightBlock();
     }
     if (key === 'ArrowUp') {
-      spinBlock();
+      // spinBlock();
+      console.log();
     }
 
     if (key === ' ') {
@@ -432,12 +437,15 @@ const Home = () => {
       while (!sevenBlockBag.includes(decidedBlock)) {
         decidedBlock = Math.floor(Math.random() * 7);
       }
-
       const index = sevenBlockBag.indexOf(decidedBlock);
       sevenBlockBag.splice(index, 1);
-      setKindOfBlock(index);
-      setBoard(renewalBlock(deletedBoard, nextBlock, kindOfBlock));
-      setNextBlock(changeNextBlock(nextBlock, kindOfBlock));
+      const newKindOfBlock = index;
+      setKindOfBlock(newKindOfBlock);
+      const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
+      setNextBlock(newNextBlock);
+
+      const renewalBoard = renewalBlock(deletedBoard, nextBlock, kindOfBlock);
+      setBoard(renewalBoard);
       canChangeNextBlock = false;
     } else {
       setBoard(newBoard);
@@ -464,10 +472,10 @@ const Home = () => {
     } while (wasDropped);
     setBoard(newBoard);
   };
-  const spinBlock = () => {
-    const newBoard = turnBlock(board, tetrisMino, kindOfBlock);
-    setBoard(newBoard);
-  };
+  // const spinBlock = () => {
+  //   const newBoard = turnBlock(board, tetrisMino, kindOfBlock);
+  //   setBoard(newBoard);
+  // };
 
   const switchOnOff = () => {
     setIsActive(!isActive);
@@ -482,12 +490,70 @@ const Home = () => {
           {nextBlock.map((row, y) =>
             row.map((display, x) => (
               <div className={styles.cell} key={`${x}-${y}`}>
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                  }}
-                />
+                {display === 0 && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#000000',
+                    }}
+                  />
+                )}
+                {(display === 1 || display === 11) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#b700ff',
+                    }}
+                  />
+                )}
+                {(display === 2 || display === 12) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#01d8e7',
+                    }}
+                  />
+                )}
+                {(display === 3 || display === 13) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#d9ff00',
+                    }}
+                  />
+                )}
+                {(display === 4 || display === 14) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#2600ff',
+                    }}
+                  />
+                )}
+                {(display === 5 || display === 15) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#ff8800',
+                    }}
+                  />
+                )}
+                {(display === 6 || display === 16) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#0aa331',
+                    }}
+                  />
+                )}
+                {(display === 7 || display === 17) && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: '#ff0000',
+                    }}
+                  />
+                )}
               </div>
             )),
           )}
