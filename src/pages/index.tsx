@@ -297,8 +297,8 @@ const turnBlock = (board: number[][], tetrisMino: number[][][], kindOfBlock: num
     sumX += block[n][0];
     sumY += block[n][1];
   }
-  const centerOfBlockX = sumX / 4;
-  const centerOfBlockY = sumY / 4;
+  const centerOfBlockX = Math.floor(sumX / 4);
+  const centerOfBlockY = Math.floor(sumY / 4);
   console.log(centerOfBlockX, centerOfBlockY, 'center');
 
   const rows = newTetrisMino[kindOfBlock].length;
