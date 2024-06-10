@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import React, { useEffect, useState, useRef } from 'react';
 
-let canChangeNextBlock = false;
+let canChangeNextBlock = true;
 let removedLine = 0;
 const tetrisMino = [
   [
@@ -48,7 +48,7 @@ const makeBlock = (board: number[][]) => {
   const block = [];
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 20; y++) {
-      if (board[y]?.[x] === 1) {
+      if (board[y]?.[x] < 11 && board[y]?.[x] !== 0) {
         block.push([x, y]);
       }
     }
@@ -66,58 +66,58 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
 
   switch (index) {
     case 0:
-      newNextBlock[1][2] = 11;
-      newNextBlock[2][2] = 11;
-      newNextBlock[2][3] = 11;
-      newNextBlock[2][1] = 11; //T purple
+      newNextBlock[1][2] = 1;
+      newNextBlock[2][2] = 1;
+      newNextBlock[2][3] = 1;
+      newNextBlock[2][1] = 1; //T purple
       break;
     case 1:
-      newNextBlock[1][0] = 12;
-      newNextBlock[1][1] = 12;
-      newNextBlock[1][2] = 12;
-      newNextBlock[1][3] = 12; //I waterblue
+      newNextBlock[1][0] = 2;
+      newNextBlock[1][1] = 2;
+      newNextBlock[1][2] = 2;
+      newNextBlock[1][3] = 2; //I waterblue
       break;
     case 2:
-      newNextBlock[2][2] = 13;
-      newNextBlock[1][2] = 13;
-      newNextBlock[1][1] = 13;
-      newNextBlock[2][1] = 13; //o yellow
+      newNextBlock[2][2] = 3;
+      newNextBlock[1][2] = 3;
+      newNextBlock[1][1] = 3;
+      newNextBlock[2][1] = 3; //o yellow
       break;
     case 3:
-      newNextBlock[1][1] = 14;
-      newNextBlock[2][2] = 14;
-      newNextBlock[2][3] = 14;
-      newNextBlock[2][1] = 14; //j blue
+      newNextBlock[1][1] = 4;
+      newNextBlock[2][2] = 4;
+      newNextBlock[2][3] = 4;
+      newNextBlock[2][1] = 4; //j blue
       break;
     case 4:
-      newNextBlock[1][3] = 15;
-      newNextBlock[2][2] = 15;
-      newNextBlock[2][3] = 15;
-      newNextBlock[2][1] = 15; //L orange
+      newNextBlock[1][3] = 5;
+      newNextBlock[2][2] = 5;
+      newNextBlock[2][3] = 5;
+      newNextBlock[2][1] = 5; //L orange
       break;
     case 5:
-      newNextBlock[1][2] = 16;
-      newNextBlock[2][2] = 16;
-      newNextBlock[1][3] = 16;
-      newNextBlock[2][1] = 16; //s green
+      newNextBlock[1][2] = 6;
+      newNextBlock[2][2] = 6;
+      newNextBlock[1][3] = 6;
+      newNextBlock[2][1] = 6; //s green
       break;
     case 6:
-      newNextBlock[1][2] = 17;
-      newNextBlock[2][2] = 17;
-      newNextBlock[2][3] = 17;
-      newNextBlock[1][1] = 17; //Z red
+      newNextBlock[1][2] = 7;
+      newNextBlock[2][2] = 7;
+      newNextBlock[2][3] = 7;
+      newNextBlock[1][1] = 7; //Z red
       break;
   }
   return newNextBlock;
 };
 
-const renewalBlock = (board: number[][], nextBlock: number[][]) => {
+const renewalBlock = (board: number[][], nextBlock: number[][], kindOfBlock: number) => {
   const block = [];
   const newBoard = structuredClone(board);
   const newNextBlock = structuredClone(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
-      if (nextBlock[y][x] === 1) {
+      if (nextBlock[y][x] !== 0) {
         block.push([x, y]);
         newNextBlock[y][x] = 0;
       }
@@ -125,7 +125,7 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   }
 
   for (const [x, y] of block) {
-    newBoard[y - 1][x + 3] = 1;
+    newBoard[y - 1][x + 3] = kindOfBlock + 1;
   }
   return newBoard;
 };
@@ -154,7 +154,7 @@ const deleteLine = (board: number[][]) => {
         for (let y = 19; y >= 0; y--) {
           if (deletedBoard[y]?.[x] === 2 && y + linePos.length < 20) {
             console.log('linePos', linePos.length);
-            deletedBoard[y + linePos.length][x] = 2;
+            deletedBoard[y + linePos.length][x] = deletedBoard[y][x];
             deletedBoard[y][x] = 0;
           }
         }
@@ -165,16 +165,15 @@ const deleteLine = (board: number[][]) => {
   return board;
 };
 
-const fallBlock = (board: number[][]) => {
+const fallBlock = (board: number[][], kindOfBlock: number) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
   for (const [tx, ty] of block) {
-    if (ty === 19 || tx === -1 || newBoard[ty + 1]?.[tx] === 2) {
+    if (ty === 19 || tx === -1 || (newBoard[ty]?.[tx] < 11 && newBoard[ty][tx] !== 0)) {
       for (const [nx, ny] of block) {
-        newBoard[ny][nx] = 2;
+        newBoard[ny][nx] = newBoard[ny][nx] + 10;
       }
-      console.log(1999);
       canChangeNextBlock = true;
       return newBoard;
     }
@@ -185,7 +184,7 @@ const fallBlock = (board: number[][]) => {
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
-        newBoard[y + 1]?.[x] !== 2 &&
+        newBoard[y + 1]?.[x] < 11 &&
         block[0][0] !== 19 &&
         block[0][1] !== 19 &&
         block[0][2] !== 19 &&
@@ -199,7 +198,7 @@ const fallBlock = (board: number[][]) => {
             newBoard[ty][tx] = 0;
           }
         }
-        return changeBlock(newBoard, position, 1);
+        return changeBlock(newBoard, position, kindOfBlock);
       }
     }
   }
@@ -207,7 +206,7 @@ const fallBlock = (board: number[][]) => {
   return newBoard;
 };
 
-const moveLeftBlock = (board: number[][]) => {
+const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
@@ -216,7 +215,7 @@ const moveLeftBlock = (board: number[][]) => {
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
-        newBoard[y]?.[x - 1] !== 2 &&
+        newBoard[y]?.[x - 1] < 11 &&
         block[0]?.[0] !== 0 &&
         block[1]?.[0] !== 0 &&
         block[2]?.[0] !== 0 &&
@@ -225,7 +224,7 @@ const moveLeftBlock = (board: number[][]) => {
         let noLeftBlock = 0;
 
         for (const [tx, ty] of block) {
-          if (board[ty][tx - 1] === 2) {
+          if (board[ty][tx - 1] >= 11) {
             noLeftBlock += 1;
           }
         }
@@ -240,14 +239,14 @@ const moveLeftBlock = (board: number[][]) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, 1);
+        return changeBlock(newBoard, position, kindOfBlock);
       }
     }
   }
   return board;
 };
 
-const moveRightBlock = (board: number[][]) => {
+const moveRightBlock = (board: number[][], kindOfBlock: number) => {
   const position = [];
   const block = makeBlock(board);
   const newBoard = structuredClone(board);
@@ -256,7 +255,7 @@ const moveRightBlock = (board: number[][]) => {
       if (
         block[0] !== undefined &&
         block[0].includes(x, y) &&
-        newBoard[y]?.[x + 1] !== 2 &&
+        newBoard[y]?.[x + 1] < 11 &&
         block[0]?.[0] !== 9 &&
         block[1]?.[0] !== 9 &&
         block[2]?.[0] !== 9 &&
@@ -265,7 +264,7 @@ const moveRightBlock = (board: number[][]) => {
         let noRightBlock = 0;
 
         for (const [tx, ty] of block) {
-          if (board[ty][tx + 1] === 2) {
+          if (board[ty][tx + 1] >= 11) {
             noRightBlock += 1;
           }
         }
@@ -279,7 +278,7 @@ const moveRightBlock = (board: number[][]) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, 1);
+        return changeBlock(newBoard, position, kindOfBlock);
       }
     }
   }
@@ -318,10 +317,10 @@ const turnBlock = (board: number[][], tetrisMino: number[][][], kindOfBlock: num
 
 const Home = () => {
   const [board, setBoard] = useState([
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -419,7 +418,7 @@ const Home = () => {
   };
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
-    const newBoard = fallBlock(board);
+    const newBoard = fallBlock(board, kindOfBlock);
 
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
@@ -437,7 +436,7 @@ const Home = () => {
       const index = sevenBlockBag.indexOf(decidedBlock);
       sevenBlockBag.splice(index, 1);
       setKindOfBlock(index);
-      setBoard(renewalBlock(deletedBoard, nextBlock));
+      setBoard(renewalBlock(deletedBoard, nextBlock, kindOfBlock));
       setNextBlock(changeNextBlock(nextBlock, kindOfBlock));
       canChangeNextBlock = false;
     } else {
@@ -445,11 +444,11 @@ const Home = () => {
     }
   };
   const leftBlock = () => {
-    const newBoard = moveLeftBlock(board);
+    const newBoard = moveLeftBlock(board, kindOfBlock);
     setBoard(newBoard);
   };
   const rightBlock = () => {
-    const newBoard = moveRightBlock(board);
+    const newBoard = moveRightBlock(board, kindOfBlock);
     setBoard(newBoard);
   };
   const hardDrop = () => {
@@ -457,7 +456,7 @@ const Home = () => {
     let wasDropped = false;
 
     do {
-      const tempBoard = fallBlock(newBoard);
+      const tempBoard = fallBlock(newBoard, kindOfBlock);
 
       wasDropped = newBoard !== tempBoard;
 
@@ -515,19 +514,59 @@ const Home = () => {
                   }}
                 />
               )}
-              {display === 1 && (
+              {(display === 1 || display === 11) && (
                 <div
                   className={styles.stone}
                   style={{
-                    background: '#0084ff',
+                    background: '#b700ff',
                   }}
                 />
               )}
-              {display === 2 && (
+              {(display === 2 || display === 12) && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#01d8e7',
+                  }}
+                />
+              )}
+              {(display === 3 || display === 13) && (
                 <div
                   className={styles.stone}
                   style={{
                     background: '#d9ff00',
+                  }}
+                />
+              )}
+              {(display === 4 || display === 14) && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#2600ff',
+                  }}
+                />
+              )}
+              {(display === 5 || display === 15) && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#ff8800',
+                  }}
+                />
+              )}
+              {(display === 6 || display === 16) && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#0aa331',
+                  }}
+                />
+              )}
+              {(display === 7 || display === 17) && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#ff0000',
                   }}
                 />
               )}
