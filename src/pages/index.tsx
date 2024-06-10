@@ -64,9 +64,8 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
     }
   }
 
-  switch (decidedBlock) {
+  switch (index) {
     case 0:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[1][2] = 1;
       newNextBlock[2][2] = 1;
       newNextBlock[2][3] = 1;
@@ -74,42 +73,36 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
 
       break;
     case 1:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[1][0] = 1;
       newNextBlock[1][1] = 1;
       newNextBlock[1][2] = 1;
       newNextBlock[1][3] = 1; //I waterblue
       break;
     case 2:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[2][2] = 1;
       newNextBlock[1][2] = 1;
       newNextBlock[1][1] = 1;
       newNextBlock[2][1] = 1; //o yellow
       break;
     case 3:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[1][1] = 1;
       newNextBlock[2][2] = 1;
       newNextBlock[2][3] = 1;
       newNextBlock[2][1] = 1; //j blue
       break;
     case 4:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[1][3] = 1;
       newNextBlock[2][2] = 1;
       newNextBlock[2][3] = 1;
       newNextBlock[2][1] = 1; //L orange
       break;
     case 5:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[1][2] = 1;
       newNextBlock[2][2] = 1;
       newNextBlock[1][3] = 1;
       newNextBlock[2][1] = 1; //s green
       break;
     case 6:
-      sevenBlockBag.splice(index, 1);
       newNextBlock[1][2] = 1;
       newNextBlock[2][2] = 1;
       newNextBlock[2][3] = 1;
@@ -294,36 +287,35 @@ const moveRightBlock = (board: number[][]) => {
   return board;
 };
 
-const rotateMatrix = (board: number[][]) => {
+const turnBlock = (board: number[][], tetrisMino: number[][][], kindOfBlock: number) => {
+  const newTetrisMino = structuredClone(tetrisMino);
   const newBoard = structuredClone(board);
   const block = makeBlock(board);
-  const rows = board.length;
-  const cols = board[0].length;
+  let sumX = 0;
+  let sumY = 0;
+  for (let n = 0; n < 4; n++) {
+    sumX += block[n][0];
+    sumY += block[n][1];
+  }
+  const centerOfBlockX = sumX / 4;
+  const centerOfBlockY = sumY / 4;
+  console.log(centerOfBlockX, centerOfBlockY, 'center');
+
+  const rows = newTetrisMino[kindOfBlock].length;
+  const cols = newTetrisMino[kindOfBlock][0].length;
   const rotated = Array.from({ length: cols }, () => Array(rows).fill(0));
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      rotated[x][rows - y - 1] = board[y][x];
+      rotated[x][rows - y - 1] = newTetrisMino[y][x];
     }
   }
-  return rotated;
+  // for (let y=0;y<20;y++){
+  //   for (let x=0;x<10;x++){
+  //     board[centerOfBlockY][centerOfBlockY]
+  //   }
+  // }
+  return newBoard;
 };
-
-// const turnBlock = () => {
-//   const rotatedTetromino = rotateMatrix(tetromino);
-//   setTetromino(rotatedTetromino);
-//   const newBoard = placeTetromino(board, rotatedTetromino, position);
-//   setBoard(newBoard);
-// };
-
-// const saveBlock = (board: number[][], holdBlock: number[][]) => {
-//   for (let x = 0; x < 10; x++) {
-//     for (let y = 0; y < 20; y++) {
-//       if (board[y].filter((cell) => cell === 0).length === 10) {
-//         board.splice(y, 1);
-//       }
-//     }
-//   }
-// };
 
 const Home = () => {
   const [board, setBoard] = useState([
@@ -444,6 +436,7 @@ const Home = () => {
       }
 
       const index = sevenBlockBag.indexOf(decidedBlock);
+      sevenBlockBag.splice(index, 1);
       setKindOfBlock(index);
       setBoard(renewalBlock(deletedBoard, nextBlock));
       setNextBlock(changeNextBlock(nextBlock, kindOfBlock));
@@ -474,9 +467,8 @@ const Home = () => {
     setBoard(newBoard);
   };
   const spinBlock = () => {
-    // const block = makeBlock(board);
-    // const turnedBlock = turnBlock(block);
-    // setBoard(turnedBlock);
+    const newBoard = turnBlock(board, tetrisMino, kindOfBlock);
+    setBoard(newBoard);
   };
 
   const switchOnOff = () => {
