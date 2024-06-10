@@ -1,7 +1,6 @@
 import styles from './index.module.css';
 import React, { useEffect, useState, useRef } from 'react';
 
-const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 let canChangeNextBlock = false;
 let removedLine = 0;
 const tetrisMino = [
@@ -57,25 +56,13 @@ const makeBlock = (board: number[][]) => {
 
   return block;
 };
-const changeNextBlock = (nextBlock: number[][]) => {
-  let decidedBlock = Math.floor(Math.random() * 7);
+const changeNextBlock = (nextBlock: number[][], index: number) => {
   const newNextBlock = structuredClone(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       newNextBlock[y][x] = 0;
     }
   }
-
-  if (sevenBlockBag.length === 0) {
-    for (let n = 0; n < 7; n++) {
-      sevenBlockBag.push(n);
-    }
-  }
-  while (!sevenBlockBag.includes(decidedBlock)) {
-    decidedBlock = Math.floor(Math.random() * 7);
-  }
-
-  const index = sevenBlockBag.indexOf(decidedBlock);
 
   switch (decidedBlock) {
     case 0:
@@ -307,13 +294,15 @@ const moveRightBlock = (board: number[][]) => {
   return board;
 };
 
-const rotateMatrix = (matrix: number[][]) => {
-  const rows = matrix.length;
-  const cols = matrix[0].length;
+const rotateMatrix = (board: number[][]) => {
+  const newBoard = structuredClone(board);
+  const block = makeBlock(board);
+  const rows = board.length;
+  const cols = board[0].length;
   const rotated = Array.from({ length: cols }, () => Array(rows).fill(0));
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      rotated[x][rows - y - 1] = matrix[y][x];
+      rotated[x][rows - y - 1] = board[y][x];
     }
   }
   return rotated;
@@ -376,6 +365,8 @@ const Home = () => {
   // ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
+  const [kindOfBlock, setKindOfBlock] = useState(0);
+  const sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -441,9 +432,21 @@ const Home = () => {
 
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
+      let decidedBlock = Math.floor(Math.random() * 7);
 
+      if (sevenBlockBag.length === 0) {
+        for (let n = 0; n < 7; n++) {
+          sevenBlockBag.push(n);
+        }
+      }
+      while (!sevenBlockBag.includes(decidedBlock)) {
+        decidedBlock = Math.floor(Math.random() * 7);
+      }
+
+      const index = sevenBlockBag.indexOf(decidedBlock);
+      setKindOfBlock(index);
       setBoard(renewalBlock(deletedBoard, nextBlock));
-      setNextBlock(changeNextBlock(nextBlock));
+      setNextBlock(changeNextBlock(nextBlock, kindOfBlock));
       canChangeNextBlock = false;
     } else {
       setBoard(newBoard);
