@@ -66,47 +66,46 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
 
   switch (index) {
     case 0:
-      newNextBlock[1][2] = 1;
-      newNextBlock[2][2] = 1;
-      newNextBlock[2][3] = 1;
-      newNextBlock[1][1] = 1; //Z red
-
+      newNextBlock[1][2] = 11;
+      newNextBlock[2][2] = 11;
+      newNextBlock[2][3] = 11;
+      newNextBlock[2][1] = 11; //T purple
       break;
     case 1:
-      newNextBlock[1][0] = 1;
-      newNextBlock[1][1] = 1;
-      newNextBlock[1][2] = 1;
-      newNextBlock[1][3] = 1; //I waterblue
+      newNextBlock[1][0] = 12;
+      newNextBlock[1][1] = 12;
+      newNextBlock[1][2] = 12;
+      newNextBlock[1][3] = 12; //I waterblue
       break;
     case 2:
-      newNextBlock[2][2] = 1;
-      newNextBlock[1][2] = 1;
-      newNextBlock[1][1] = 1;
-      newNextBlock[2][1] = 1; //o yellow
+      newNextBlock[2][2] = 13;
+      newNextBlock[1][2] = 13;
+      newNextBlock[1][1] = 13;
+      newNextBlock[2][1] = 13; //o yellow
       break;
     case 3:
-      newNextBlock[1][1] = 1;
-      newNextBlock[2][2] = 1;
-      newNextBlock[2][3] = 1;
-      newNextBlock[2][1] = 1; //j blue
+      newNextBlock[1][1] = 14;
+      newNextBlock[2][2] = 14;
+      newNextBlock[2][3] = 14;
+      newNextBlock[2][1] = 14; //j blue
       break;
     case 4:
-      newNextBlock[1][3] = 1;
-      newNextBlock[2][2] = 1;
-      newNextBlock[2][3] = 1;
-      newNextBlock[2][1] = 1; //L orange
+      newNextBlock[1][3] = 15;
+      newNextBlock[2][2] = 15;
+      newNextBlock[2][3] = 15;
+      newNextBlock[2][1] = 15; //L orange
       break;
     case 5:
-      newNextBlock[1][2] = 1;
-      newNextBlock[2][2] = 1;
-      newNextBlock[1][3] = 1;
-      newNextBlock[2][1] = 1; //s green
+      newNextBlock[1][2] = 16;
+      newNextBlock[2][2] = 16;
+      newNextBlock[1][3] = 16;
+      newNextBlock[2][1] = 16; //s green
       break;
     case 6:
-      newNextBlock[1][2] = 1;
-      newNextBlock[2][2] = 1;
-      newNextBlock[2][3] = 1;
-      newNextBlock[2][1] = 1; //T purple
+      newNextBlock[1][2] = 17;
+      newNextBlock[2][2] = 17;
+      newNextBlock[2][3] = 17;
+      newNextBlock[1][1] = 17; //Z red
       break;
   }
   return newNextBlock;
@@ -298,7 +297,7 @@ const turnBlock = (board: number[][], tetrisMino: number[][][], kindOfBlock: num
     sumY += block[n][1];
   }
   const centerOfBlockX = Math.floor(sumX / 4);
-  const centerOfBlockY = Math.floor(sumY / 4);
+  const centerOfBlockY = sumY / 4;
   console.log(centerOfBlockX, centerOfBlockY, 'center');
 
   const rows = newTetrisMino[kindOfBlock].length;
@@ -508,12 +507,30 @@ const Home = () => {
         {board.map((row, y) =>
           row.map((display, x) => (
             <div className={styles.cell} key={`${x}-${y}`}>
-              <div
-                className={styles.stone}
-                style={{
-                  background: display === 0 ? '#000000' : display === 1 ? '#0084ff' : '#d9ff00',
-                }}
-              />
+              {display === 0 && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#000000',
+                  }}
+                />
+              )}
+              {display === 1 && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#0084ff',
+                  }}
+                />
+              )}
+              {display === 2 && (
+                <div
+                  className={styles.stone}
+                  style={{
+                    background: '#d9ff00',
+                  }}
+                />
+              )}
             </div>
           )),
         )}
