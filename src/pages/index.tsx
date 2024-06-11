@@ -346,12 +346,17 @@ const Home = () => {
   ]);
 
   const [kindOfBlock, setKindOfBlock] = useState(Math.floor(Math.random() * 7));
-  const [nextBlock, setNextBlock] = useState([
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ]);
+  const [nextBlock, setNextBlock] = useState(
+    changeNextBlock(
+      [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ],
+      Math.floor(Math.random() * 7),
+    ),
+  );
 
   // const [holdBlock, setHoldBlock] = useState([
   //   [0, 1, 0, 0],
@@ -442,9 +447,10 @@ const Home = () => {
       const newKindOfBlock = index;
       setKindOfBlock(newKindOfBlock);
       const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
-      setNextBlock((newNextBlock) => changeNextBlock(newNextBlock, kindOfBlock));
-      console.log(newNextBlock);
-      const renewalBoard = renewalBlock(deletedBoard, nextBlock, kindOfBlock);
+      setNextBlock(newNextBlock);
+
+      const renewalBoard = renewalBlock(deletedBoard, newNextBlock, kindOfBlock);
+
       setBoard(renewalBoard);
       canChangeNextBlock = false;
     } else {
