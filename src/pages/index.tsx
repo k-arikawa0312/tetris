@@ -442,8 +442,8 @@ const Home = () => {
       const newKindOfBlock = index;
       setKindOfBlock(newKindOfBlock);
       const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
-      setNextBlock(newNextBlock);
-
+      setNextBlock((newNextBlock) => changeNextBlock(newNextBlock, kindOfBlock));
+      console.log(newNextBlock);
       const renewalBoard = renewalBlock(deletedBoard, nextBlock, kindOfBlock);
       setBoard(renewalBoard);
       canChangeNextBlock = false;
