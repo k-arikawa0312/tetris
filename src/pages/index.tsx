@@ -114,13 +114,13 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
 const renewalBlock = (board: number[][], nextBlock: number[][], kindOfBlock: number) => {
   const block = [];
   const newBoard = structuredClone(board);
-  const newNextBlock = structuredClone(nextBlock);
+  // const newNextBlock = structuredClone(nextBlock);
   console.table(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] !== 0) {
         block.push([x, y]);
-        newNextBlock[y][x] = 0;
+
         console.log('asdd');
       }
     }
@@ -446,12 +446,12 @@ const Home = () => {
       sevenBlockBag.splice(index, 1);
       const newKindOfBlock = index;
       setKindOfBlock(newKindOfBlock);
-      const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
-      setNextBlock(newNextBlock);
 
-      const renewalBoard = renewalBlock(deletedBoard, newNextBlock, kindOfBlock);
+      const renewalBoard = renewalBlock(deletedBoard, nextBlock, kindOfBlock);
 
       setBoard(renewalBoard);
+      const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
+      setNextBlock(newNextBlock);
       canChangeNextBlock = false;
     } else {
       setBoard(newBoard);
