@@ -111,25 +111,26 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
   return newNextBlock;
 };
 
-const renewalBlock = (board: number[][], nextBlock: number[][], kindOfBlock: number) => {
+const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   const block = [];
   const newBoard = structuredClone(board);
+  let kindOfBlock = 0;
   // const newNextBlock = structuredClone(nextBlock);
   console.table(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] !== 0) {
         block.push([x, y]);
-
-        console.log('asdd');
+        kindOfBlock = board[y][x];
       }
     }
   }
-
-  console.log(41655220);
-  console.log(block);
   for (const [x, y] of block) {
-    console.log(4111);
+    if (newBoard[y - 1][x + 3] !== 0) {
+      alert('gameover');
+    }
+  }
+  for (const [x, y] of block) {
     newBoard[y - 1][x + 3] = kindOfBlock + 1;
   }
   return newBoard;
@@ -174,7 +175,7 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
-  console.log(block);
+
   for (const [tx, ty] of block) {
     if (ty === 19 || tx === -1 || newBoard[ty + 1]?.[tx] >= 11) {
       for (const [nx, ny] of block) {
@@ -199,7 +200,6 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
         for (const [tx, ty] of block) {
           if (board[ty] !== undefined) {
             position.push([tx, ty + 1]);
-            console.log('removedown');
 
             newBoard[ty][tx] = 0;
           }
@@ -238,8 +238,6 @@ const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
         }
         for (const [tx, ty] of block) {
           position.push([tx - 1, ty]);
-          console.log(position);
-          console.log('removeleft');
 
           newBoard[ty][tx] = 0;
         }
@@ -278,7 +276,6 @@ const moveRightBlock = (board: number[][], kindOfBlock: number) => {
         }
         for (const [tx, ty] of block) {
           position.push([tx + 1, ty]);
-          console.log('removeright');
 
           newBoard[ty][tx] = 0;
         }
@@ -395,6 +392,7 @@ const Home = () => {
       isDropping = false;
     }
 
+    console.table(board);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
@@ -404,7 +402,6 @@ const Home = () => {
     if (!isActive) return;
     const key = event.key;
     if (key === 'ArrowDown') {
-      console.log(audioRef);
       downBlock(false);
     }
     if (key === 'ArrowLeft') {
@@ -447,7 +444,7 @@ const Home = () => {
       const newKindOfBlock = index;
       setKindOfBlock(newKindOfBlock);
 
-      const renewalBoard = renewalBlock(deletedBoard, nextBlock, kindOfBlock);
+      const renewalBoard = renewalBlock(deletedBoard, nextBlock);
 
       setBoard(renewalBoard);
       const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
