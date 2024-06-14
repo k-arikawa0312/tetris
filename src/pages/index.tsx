@@ -205,7 +205,7 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
             newBoard[ty][tx] = 0;
           }
         }
-        return changeBlock(newBoard, position, kindOfBlock + 1);
+        return changeBlock(newBoard, position, kindOfBlock);
       }
     }
   }
@@ -243,7 +243,7 @@ const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, kindOfBlock + 1);
+        return changeBlock(newBoard, position, kindOfBlock);
       }
     }
   }
@@ -281,7 +281,7 @@ const moveRightBlock = (board: number[][], kindOfBlock: number) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, kindOfBlock + 1);
+        return changeBlock(newBoard, position, kindOfBlock);
       }
     }
   }
