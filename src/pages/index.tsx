@@ -121,17 +121,18 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] !== 0) {
         block.push([x, y]);
-        kindOfBlock = board[y][x];
+        kindOfBlock = nextBlock[y][x];
       }
     }
   }
+  console.log('nextblock', kindOfBlock);
   for (const [x, y] of block) {
     if (newBoard[y - 1][x + 3] !== 0) {
       alert('gameover');
     }
   }
   for (const [x, y] of block) {
-    newBoard[y - 1][x + 3] = kindOfBlock + 1;
+    newBoard[y - 1][x + 3] = kindOfBlock;
   }
   return newBoard;
 };
