@@ -32,7 +32,7 @@ const tetrisMino = [
   ],
 ];
 
-//中心座標を計算してここから回転先を作りそれを適応
+//中心座標を計算してここから回転先を作りそれを適
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -55,6 +55,16 @@ const makeBlock = (board: number[][]) => {
   }
 
   return block;
+};
+const nowKindOfBlock = (board: number[][]) => {
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 20; y++) {
+      if (board[y][x] !== undefined && board[y][x] !== 0 && board[y][x] < 11) {
+        return board[y][x];
+      }
+    }
+  }
+  return 1;
 };
 const changeNextBlock = (nextBlock: number[][], index: number) => {
   const newNextBlock = structuredClone(nextBlock);
@@ -205,7 +215,7 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
             newBoard[ty][tx] = 0;
           }
         }
-        return changeBlock(newBoard, position, kindOfBlock);
+        return changeBlock(newBoard, position, nowKindOfBlock(board));
       }
     }
   }
@@ -243,7 +253,7 @@ const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, kindOfBlock);
+        return changeBlock(newBoard, position, nowKindOfBlock(board));
       }
     }
   }
@@ -281,7 +291,7 @@ const moveRightBlock = (board: number[][], kindOfBlock: number) => {
           newBoard[ty][tx] = 0;
         }
 
-        return changeBlock(newBoard, position, kindOfBlock);
+        return changeBlock(newBoard, position, nowKindOfBlock(board));
       }
     }
   }
@@ -343,7 +353,7 @@ const Home = () => {
     [11, 12, 13, 14, 15, 16, 17, 13, 0, 16],
   ]);
 
-  const [kindOfBlock, setKindOfBlock] = useState(Math.floor(Math.random() * 7));
+  const [kindOfBlock, setKindOfBlock] = useState([Math.floor(Math.random() * 7), 0]);
   const [nextBlock, setNextBlock] = useState(
     changeNextBlock(
       [
@@ -426,8 +436,8 @@ const Home = () => {
   };
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
-    const newBoard = fallBlock(board, kindOfBlock);
-
+    const newBoard = fallBlock(board, kindOfBlock[0]);
+    console.log(canChangeNextBlock);
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
       let decidedBlock = Math.floor(Math.random() * 7);
@@ -443,12 +453,14 @@ const Home = () => {
       const index = sevenBlockBag.indexOf(decidedBlock);
       sevenBlockBag.splice(index, 1);
       const newKindOfBlock = index;
-      setKindOfBlock(newKindOfBlock);
+      setKindOfBlock([nowKindOfBlock(board), newKindOfBlock]);
+      console.log('kindOfBlock', kindOfBlock);
+      console.log('kindOfBlock', newKindOfBlock);
 
       const renewalBoard = renewalBlock(deletedBoard, nextBlock);
 
       setBoard(renewalBoard);
-      const newNextBlock = changeNextBlock(nextBlock, kindOfBlock);
+      const newNextBlock = changeNextBlock(nextBlock, kindOfBlock[1]);
       setNextBlock(newNextBlock);
       canChangeNextBlock = false;
     } else {
@@ -456,11 +468,11 @@ const Home = () => {
     }
   };
   const leftBlock = () => {
-    const newBoard = moveLeftBlock(board, kindOfBlock);
+    const newBoard = moveLeftBlock(board, kindOfBlock[0]);
     setBoard(newBoard);
   };
   const rightBlock = () => {
-    const newBoard = moveRightBlock(board, kindOfBlock);
+    const newBoard = moveRightBlock(board, kindOfBlock[0]);
     setBoard(newBoard);
   };
   const hardDrop = () => {
@@ -468,7 +480,7 @@ const Home = () => {
     let wasDropped = false;
 
     do {
-      const tempBoard = fallBlock(newBoard, kindOfBlock);
+      const tempBoard = fallBlock(newBoard, kindOfBlock[0]);
 
       wasDropped = newBoard !== tempBoard;
 
