@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 let canChangeNextBlock = true;
 let removedLine = 0;
+const normalBoard = Array.from({ length: 10 }, () => Array.from({ length: 20 }, () => 0));
 const tetrisMino = [
   [
     [0, 1, 0],
@@ -167,9 +168,9 @@ const deleteLine = (board: number[][]) => {
       }
 
       const deletedBoard: number[][] = changeBlock(newBoard, deletePos, 0);
-      for (let x = 0; x < 10; x++) {
-        for (let y = 19; y >= 0; y--) {
-          if (deletedBoard[y]?.[x] === 2 && y + linePos.length < 20) {
+      for (let y = 19; y >= 0; y--) {
+        for (let x = 0; x < 10; x++) {
+          if (deletedBoard[y]?.[x] >= 11 && y + linePos.length < 20) {
             console.log('linePos', linePos.length);
             deletedBoard[y + linePos.length][x] = deletedBoard[y][x];
             deletedBoard[y][x] = 0;
@@ -182,7 +183,7 @@ const deleteLine = (board: number[][]) => {
   return board;
 };
 
-const fallBlock = (board: number[][], kindOfBlock: number) => {
+const fallBlock = (board: number[][]) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
@@ -222,7 +223,7 @@ const fallBlock = (board: number[][], kindOfBlock: number) => {
   return newBoard;
 };
 
-const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
+const moveLeftBlock = (board: number[][]) => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
@@ -260,7 +261,7 @@ const moveLeftBlock = (board: number[][], kindOfBlock: number) => {
   return board;
 };
 
-const moveRightBlock = (board: number[][], kindOfBlock: number) => {
+const moveRightBlock = (board: number[][]) => {
   const position = [];
   const block = makeBlock(board);
   const newBoard = structuredClone(board);
@@ -348,9 +349,9 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [11, 12, 13, 14, 15, 16, 17, 11, 0, 14],
-    [11, 12, 13, 14, 15, 16, 17, 12, 0, 15],
-    [11, 12, 13, 14, 15, 16, 17, 13, 0, 16],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
   const [kindOfBlock, setKindOfBlock] = useState([Math.floor(Math.random() * 7), 0]);
@@ -436,7 +437,7 @@ const Home = () => {
   };
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
-    const newBoard = fallBlock(board, kindOfBlock[0]);
+    const newBoard = fallBlock(board);
     console.log(canChangeNextBlock);
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
@@ -468,11 +469,11 @@ const Home = () => {
     }
   };
   const leftBlock = () => {
-    const newBoard = moveLeftBlock(board, kindOfBlock[0]);
+    const newBoard = moveLeftBlock(board);
     setBoard(newBoard);
   };
   const rightBlock = () => {
-    const newBoard = moveRightBlock(board, kindOfBlock[0]);
+    const newBoard = moveRightBlock(board);
     setBoard(newBoard);
   };
   const hardDrop = () => {
@@ -480,7 +481,7 @@ const Home = () => {
     let wasDropped = false;
 
     do {
-      const tempBoard = fallBlock(newBoard, kindOfBlock[0]);
+      const tempBoard = fallBlock(newBoard);
 
       wasDropped = newBoard !== tempBoard;
 
@@ -497,6 +498,12 @@ const Home = () => {
     setIsActive(!isActive);
   };
 
+  const resetGame = () => {
+    setBoard();
+    setIsActive(false);
+    canChangeNextBlock = true;
+    setSeconds(0);
+  };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       RemovedLine:{removedLine}
@@ -582,7 +589,12 @@ const Home = () => {
         >
           {isActive ? 'pause' : 'start'}
         </button>
-        <button style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}>sound</button>
+        <button
+          style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}
+          onClick={resetGame}
+        >
+          sound
+        </button>
       </div>
       <div className={styles.board}>
         {board.map((row, y) =>
