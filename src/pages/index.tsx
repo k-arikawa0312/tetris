@@ -535,62 +535,13 @@ const Home = () => {
                     }}
                   />
                 )}
-                {(display === 1 || display === 11) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(183, 0, 255)',
-                    }}
-                  />
-                )}
-                {(display === 2 || display === 12) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(1, 216, 231)',
-                    }}
-                  />
-                )}
-                {(display === 3 || display === 13) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(217, 255, 0)',
-                    }}
-                  />
-                )}
-                {(display === 4 || display === 14) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(38, 0, 255)',
-                    }}
-                  />
-                )}
-                {(display === 5 || display === 15) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(255, 136, 0)',
-                    }}
-                  />
-                )}
-                {(display === 6 || display === 16) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(10, 163, 49)',
-                    }}
-                  />
-                )}
-                {(display === 7 || display === 17) && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: 'rgb(255, 0, 0)',
-                    }}
-                  />
-                )}
+                {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
+                {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
+                {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
+                {(display === 4 || display === 14) && <div className={styles.blueStone} />}
+                {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
+                {(display === 6 || display === 16) && <div className={styles.greenStone} />}
+                {(display === 7 || display === 17) && <div className={styles.redStone} />}
               </div>
             )),
           )}

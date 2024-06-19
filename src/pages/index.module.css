@@ -45,48 +45,54 @@
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: rgb(1 216 231);
-  border: 1px solid;
+  background-color: #00f0f0;
+  border: 5px solid;
+  border-color: #80ffff #0cc #0cc #80ffff;
 }
 
 .yellowStone {
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: rgb(217 255 0);
-  border: 1px solid;
+  background-color: #f0f000;
+  border: 5px solid;
+  border-color: #fcfc86 #cc0 #cc0 #fcfc86;
 }
 
 .blueStone {
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: rgb(38 0 255);
-  border: 1px solid;
+  background-color: #0000f0;
+  border: 5px solid;
+  border-color: #8080ff #00c #00c #8080ff;
 }
 
 .orangeStone {
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: rgb(255 136 0);
-  border: 1px solid;
+  background-color: #f0a000;
+  border: 5px solid;
+  border-color: #ffd080 #cc8400 #cc8400 #ffd080;
 }
 
 .greenStone {
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: rgb(10 163 49);
-  border: 1px solid;
+  background-color: #00f000;
+  border: 5px solid;
+  border-color: #80ff80 #0c0 #0c0 #80ff80;
 }
 
 .redStone {
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: rgb(255 0 0);
-  border: 1px solid;
+  background-color: #f00000;
+  border: 5px solid;
+  border-color: #ff8080 #c00 #c00 #ff8080;
 }
 
 .emptyCell {
