@@ -22,7 +22,8 @@
   display: flex;
   width: 30px;
   height: 30px;
-  border: 1px solid white;
+
+  /* border: 1px solid white; */
 }
 
 .stone {
@@ -36,7 +37,8 @@
   width: 30px;
   height: 30px;
   background-color: #a000f0;
-  border: 5px solid #8400cc;
+  border: 5px solid;
+  border-color: #d080ff #8400cc #8400cc #d080ff;
 }
 
 .skyblueStone {
@@ -55,7 +57,7 @@
   border: 1px solid;
 }
 
-.bluestone {
+.blueStone {
   display: flex;
   width: 30px;
   height: 30px;
