@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 let canChangeNextBlock = true;
 let removedLine = 0;
-const normalBoard = Array.from({ length: 10 }, () => Array.from({ length: 20 }, () => 0));
+
 const tetrisMino = [
   [
     [0, 1, 0],
@@ -136,10 +136,10 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
       }
     }
   }
-  console.log('nextblock', kindOfBlock);
   for (const [x, y] of block) {
     if (newBoard[y - 1][x + 3] !== 0) {
       alert('gameover');
+      return newBoard;
     }
   }
   for (const [x, y] of block) {
@@ -154,7 +154,7 @@ const deleteLine = (board: number[][]) => {
   const linePos = [];
   const newBoard = structuredClone(board);
   for (let row = 0; row < 20; row++) {
-    isLine = board[row].filter((cell) => cell !== 0).length;
+    isLine = newBoard[row].filter((cell) => cell !== 0).length;
 
     if (isLine === 10) {
       for (let y = 0; y < 20; y++) {
@@ -172,8 +172,9 @@ const deleteLine = (board: number[][]) => {
         for (let x = 0; x < 10; x++) {
           if (deletedBoard[y]?.[x] >= 11 && y + linePos.length < 20) {
             console.log('linePos', linePos.length);
-            deletedBoard[y + linePos.length][x] = deletedBoard[y][x];
+            deletedBoard[y + linePos.length][x] = newBoard[y][x];
             deletedBoard[y][x] = 0;
+            console.table(deletedBoard);
           }
         }
       }
@@ -331,13 +332,13 @@ const turnBlock = (board: number[][], tetrisMino: number[][][], kindOfBlock: num
 
 const Home = () => {
   const [board, setBoard] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 4, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 5, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 6, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 7, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -404,7 +405,6 @@ const Home = () => {
       isDropping = false;
     }
 
-    console.table(board);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
@@ -415,22 +415,16 @@ const Home = () => {
     const key = event.key;
     if (key === 'ArrowDown') {
       downBlock(false);
-    }
-    if (key === 'ArrowLeft') {
+    } else if (key === 'ArrowLeft') {
       leftBlock();
-    }
-    if (key === 'ArrowRight') {
+    } else if (key === 'ArrowRight') {
       rightBlock();
-    }
-    if (key === 'ArrowUp') {
+    } else if (key === 'ArrowUp') {
       // spinBlock();
       console.log();
-    }
-
-    if (key === ' ') {
+    } else if (key === ' ') {
       hardDrop();
-    }
-    if (key === 'c') {
+    } else if (key === 'c') {
       console.log('c');
     }
     return;
@@ -438,7 +432,6 @@ const Home = () => {
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
     const newBoard = fallBlock(board);
-    console.log(canChangeNextBlock);
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
       let decidedBlock = Math.floor(Math.random() * 7);
@@ -455,8 +448,6 @@ const Home = () => {
       sevenBlockBag.splice(index, 1);
       const newKindOfBlock = index;
       setKindOfBlock([nowKindOfBlock(board), newKindOfBlock]);
-      console.log('kindOfBlock', kindOfBlock);
-      console.log('kindOfBlock', newKindOfBlock);
 
       const renewalBoard = renewalBlock(deletedBoard, nextBlock);
 
@@ -499,10 +490,33 @@ const Home = () => {
   };
 
   const resetGame = () => {
-    setBoard();
+    setBoard([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
     setIsActive(false);
     canChangeNextBlock = true;
     setSeconds(0);
+    removedLine = 0;
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
@@ -515,7 +529,7 @@ const Home = () => {
               <div className={styles.cell} key={`${x}-${y}`}>
                 {display === 0 && (
                   <div
-                    className={styles.stone}
+                    className={styles.emptyCell}
                     style={{
                       background: '#000000',
                     }}
@@ -525,7 +539,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#b700ff',
+                      background: 'rgb(183, 0, 255)',
                     }}
                   />
                 )}
@@ -533,7 +547,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#01d8e7',
+                      background: 'rgb(1, 216, 231)',
                     }}
                   />
                 )}
@@ -541,7 +555,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#d9ff00',
+                      background: 'rgb(217, 255, 0)',
                     }}
                   />
                 )}
@@ -549,7 +563,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#2600ff',
+                      background: 'rgb(38, 0, 255)',
                     }}
                   />
                 )}
@@ -557,7 +571,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#ff8800',
+                      background: 'rgb(255, 136, 0)',
                     }}
                   />
                 )}
@@ -565,7 +579,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#0aa331',
+                      background: 'rgb(10, 163, 49)',
                     }}
                   />
                 )}
@@ -573,7 +587,7 @@ const Home = () => {
                   <div
                     className={styles.stone}
                     style={{
-                      background: '#ff0000',
+                      background: 'rgb(255, 0, 0)',
                     }}
                   />
                 )}
@@ -589,11 +603,12 @@ const Home = () => {
         >
           {isActive ? 'pause' : 'start'}
         </button>
+        <button style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}>sound</button>
         <button
           style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}
           onClick={resetGame}
         >
-          sound
+          reset
         </button>
       </div>
       <div className={styles.board}>
@@ -602,68 +617,19 @@ const Home = () => {
             <div className={styles.cell} key={`${x}-${y}`}>
               {display === 0 && (
                 <div
-                  className={styles.stone}
+                  className={styles.emptyCell}
                   style={{
                     background: '#000000',
                   }}
                 />
               )}
-              {(display === 1 || display === 11) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#b700ff',
-                  }}
-                />
-              )}
-              {(display === 2 || display === 12) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#01d8e7',
-                  }}
-                />
-              )}
-              {(display === 3 || display === 13) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#d9ff00',
-                  }}
-                />
-              )}
-              {(display === 4 || display === 14) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#2600ff',
-                  }}
-                />
-              )}
-              {(display === 5 || display === 15) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#ff8800',
-                  }}
-                />
-              )}
-              {(display === 6 || display === 16) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#0aa331',
-                  }}
-                />
-              )}
-              {(display === 7 || display === 17) && (
-                <div
-                  className={styles.stone}
-                  style={{
-                    background: '#ff0000',
-                  }}
-                />
-              )}
+              {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
+              {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
+              {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
+              {(display === 4 || display === 14) && <div className={styles.blueStone} />}
+              {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
+              {(display === 6 || display === 16) && <div className={styles.greenStone} />}
+              {(display === 7 || display === 17) && <div className={styles.redStone} />}
             </div>
           )),
         )}

@@ -29,7 +29,69 @@
   display: flex;
   width: 30px;
   height: 30px;
-  background-color: aqua;
+}
+
+.purpleStone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: #a000f0;
+  border: 5px solid #8400cc;
+}
+
+.skyblueStone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(1 216 231);
+  border: 1px solid;
+}
+
+.yellowStone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(217 255 0);
+  border: 1px solid;
+}
+
+.bluestone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(38 0 255);
+  border: 1px solid;
+}
+
+.orangeStone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(255 136 0);
+  border: 1px solid;
+}
+
+.greenStone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(10 163 49);
+  border: 1px solid;
+}
+
+.redStone {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(255 0 0);
+  border: 1px solid;
+}
+
+.emptyCell {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(0 0 0);
 }
 
 .nextBlockBoard {
