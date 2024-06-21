@@ -4,35 +4,6 @@ import React, { useEffect, useState, useRef } from 'react';
 let canChangeNextBlock = true;
 let removedLine = 0;
 
-const tetrisMino = [
-  [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-
-  [[1, 1, 1, 1]],
-  [
-    [1, 1],
-    [1, 1],
-  ],
-  [
-    [1, 0, 0],
-    [1, 1, 1],
-  ],
-  [
-    [0, 0, 1],
-    [1, 1, 1],
-  ],
-  [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-];
-
 //中心座標を計算してここから回転先を作りそれを適
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
@@ -168,11 +139,12 @@ const deleteLine = (board: number[][]) => {
       }
 
       const deletedBoard: number[][] = changeBlock(newBoard, deletePos, 0);
+      const tempDeletedBoard: number[][] = structuredClone(deletedBoard);
       for (let y = 19; y >= 0; y--) {
         for (let x = 0; x < 10; x++) {
           if (deletedBoard[y]?.[x] >= 11 && y + linePos.length < 20) {
             console.log('linePos', linePos.length);
-            deletedBoard[y + linePos.length][x] = newBoard[y][x];
+            deletedBoard[y + linePos.length][x] = tempDeletedBoard[y][x];
             deletedBoard[y][x] = 0;
             console.table(deletedBoard);
           }
@@ -300,33 +272,27 @@ const moveRightBlock = (board: number[][]) => {
   return board;
 };
 
-const turnBlock = (board: number[][], tetrisMino: number[][][], kindOfBlock: number) => {
-  const newTetrisMino = structuredClone(tetrisMino);
-  const newBoard = structuredClone(board);
+const rotateBlock = (board: number[][]) => {
   const block = makeBlock(board);
-  let sumX = 0;
-  let sumY = 0;
-  for (let n = 0; n < 4; n++) {
-    sumX += block[n][0];
-    sumY += block[n][1];
-  }
-  const centerOfBlockX = Math.floor(sumX / 4);
-  const centerOfBlockY = sumY / 4;
-  console.log(centerOfBlockX, centerOfBlockY, 'center');
-
-  const rows = newTetrisMino[kindOfBlock].length;
-  const cols = newTetrisMino[kindOfBlock][0].length;
-  const rotated = Array.from({ length: cols }, () => Array(rows).fill(0));
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      rotated[x][rows - y - 1] = newTetrisMino[y][x];
+  const kindOfBlock = nowKindOfBlock(board);
+  const pivot = block[1];
+  const newBlock = block.map(([x, y]) => {
+    const dx = x - pivot[0];
+    const dy = y - pivot[1];
+    return [pivot[0] - dy, pivot[1] + dx];
+  });
+  for (const [x, y] of newBlock) {
+    if (x < 0 || x >= 10 || y < 0 || y >= 20 || board[y][x] >= 11) {
+      return board;
     }
   }
-  // for (let y=0;y<20;y++){
-  //   for (let x=0;x<10;x++){
-  //     board[centerOfBlockY][centerOfBlockY]
-  //   }
-  // }
+  const newBoard = structuredClone(board);
+  for (const [x, y] of block) {
+    newBoard[y][x] = 0;
+  }
+  for (const [x, y] of newBlock) {
+    newBoard[y][x] = kindOfBlock;
+  }
   return newBoard;
 };
 
@@ -420,8 +386,7 @@ const Home = () => {
     } else if (key === 'ArrowRight') {
       rightBlock();
     } else if (key === 'ArrowUp') {
-      // spinBlock();
-      console.log();
+      spinBlock();
     } else if (key === ' ') {
       hardDrop();
     } else if (key === 'c') {
@@ -480,10 +445,10 @@ const Home = () => {
     } while (wasDropped);
     setBoard(newBoard);
   };
-  // const spinBlock = () => {
-  //   const newBoard = turnBlock(board, tetrisMino, kindOfBlock);
-  //   setBoard(newBoard);
-  // };
+  const spinBlock = () => {
+    const newBoard = rotateBlock(board);
+    setBoard(newBoard);
+  };
 
   const switchOnOff = () => {
     setIsActive(!isActive);
@@ -527,14 +492,7 @@ const Home = () => {
           {nextBlock.map((row, y) =>
             row.map((display, x) => (
               <div className={styles.cell} key={`${x}-${y}`}>
-                {display === 0 && (
-                  <div
-                    className={styles.emptyCell}
-                    style={{
-                      background: '#000000',
-                    }}
-                  />
-                )}
+                {display === 0 && <div className={styles.emptyCell} />}
                 {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
                 {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
                 {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
@@ -566,14 +524,7 @@ const Home = () => {
         {board.map((row, y) =>
           row.map((display, x) => (
             <div className={styles.cell} key={`${x}-${y}`}>
-              {display === 0 && (
-                <div
-                  className={styles.emptyCell}
-                  style={{
-                    background: '#000000',
-                  }}
-                />
-              )}
+              {display === 0 && <div className={styles.emptyCell} />}
               {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
               {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
               {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
