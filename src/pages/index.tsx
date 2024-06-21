@@ -274,6 +274,8 @@ const moveRightBlock = (board: number[][]) => {
 const rotateBlock = (board: number[][]) => {
   const block = makeBlock(board);
   const kindOfBlock = nowKindOfBlock(board);
+  let slideX = 0;
+  let slideY = 0;
 
   if (block.length !== 4) {
     return board; // 安全策: ブロックが正しい形状でない場合は回転しない
@@ -287,9 +289,28 @@ const rotateBlock = (board: number[][]) => {
   });
 
   for (const [x, y] of newBlock) {
-    if (x < 0 || x >= 10 || y < 0 || y >= 20 || board[y][x] >= 11) {
-      return board; // 回転がボード外または他のブロックに重なる場合は回転キャンセル
+    if (x < 0) {
+      while (x + slideX < 0) {
+        slideX += 1;
+      }
     }
+    if (x >= 10) {
+      while (x + slideX >= 10) {
+        slideX -= 1;
+      }
+    }
+    if (y < 0) {
+      while (y + slideY < 0) {
+        slideY += 1;
+      }
+    }
+    if (y >= 20) {
+      while (y + slideY >= 20) {
+        slideY += 1;
+      }
+    }
+    // if (board[y][x] >= 11) {
+    // }
   }
 
   const newBoard = structuredClone(board);
@@ -298,7 +319,7 @@ const rotateBlock = (board: number[][]) => {
   }
 
   for (const [x, y] of newBlock) {
-    newBoard[y][x] = kindOfBlock;
+    newBoard[y + slideY][x + slideX] = kindOfBlock;
   }
 
   return newBoard;
