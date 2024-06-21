@@ -283,9 +283,9 @@ const rotateBlock = (board: number[][]) => {
 
   const pivot = block[1]; // ピボットをブロックの中心に設定
   const newBlock = block.map(([x, y]) => {
-    const dx = x - pivot[0];
-    const dy = y - pivot[1];
-    return [pivot[0] - dy, pivot[1] + dx]; // 90度回転
+    const relativeX = x - pivot[0];
+    const relativeY = y - pivot[1];
+    return [pivot[0] - relativeY, pivot[1] + relativeX]; // 90度回転
   });
 
   for (const [x, y] of newBlock) {
