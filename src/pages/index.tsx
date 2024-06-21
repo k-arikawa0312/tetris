@@ -271,28 +271,36 @@ const moveRightBlock = (board: number[][]) => {
   }
   return board;
 };
-
 const rotateBlock = (board: number[][]) => {
   const block = makeBlock(board);
   const kindOfBlock = nowKindOfBlock(board);
-  const pivot = block[1];
+
+  if (block.length !== 4) {
+    return board; // 安全策: ブロックが正しい形状でない場合は回転しない
+  }
+
+  const pivot = block[1]; // ピボットをブロックの中心に設定
   const newBlock = block.map(([x, y]) => {
     const dx = x - pivot[0];
     const dy = y - pivot[1];
-    return [pivot[0] - dy, pivot[1] + dx];
+    return [pivot[0] - dy, pivot[1] + dx]; // 90度回転
   });
+
   for (const [x, y] of newBlock) {
     if (x < 0 || x >= 10 || y < 0 || y >= 20 || board[y][x] >= 11) {
-      return board;
+      return board; // 回転がボード外または他のブロックに重なる場合は回転キャンセル
     }
   }
+
   const newBoard = structuredClone(board);
   for (const [x, y] of block) {
     newBoard[y][x] = 0;
   }
+
   for (const [x, y] of newBlock) {
     newBoard[y][x] = kindOfBlock;
   }
+
   return newBoard;
 };
 
