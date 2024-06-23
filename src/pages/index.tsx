@@ -36,7 +36,7 @@ const nowKindOfBlock = (board: number[][]) => {
       }
     }
   }
-  return 1;
+  return 0;
 };
 const changeNextBlock = (nextBlock: number[][], index: number) => {
   const newNextBlock = structuredClone(nextBlock);
@@ -143,7 +143,6 @@ const deleteLine = (board: number[][]) => {
       for (let y = 19; y >= 0; y--) {
         for (let x = 0; x < 10; x++) {
           if (deletedBoard[y]?.[x] >= 11 && y + linePos.length < 20) {
-            console.log('linePos', linePos.length);
             deletedBoard[y + linePos.length][x] = tempDeletedBoard[y][x];
             deletedBoard[y][x] = 0;
             console.table(deletedBoard);
@@ -277,11 +276,12 @@ const rotateBlock = (board: number[][]) => {
   let slideX = 0;
   let slideY = 0;
 
-  if (block.length !== 4) {
+  if (block.length !== 4 || kindOfBlock === 3) {
     return board; // 安全策: ブロックが正しい形状でない場合は回転しない
   }
 
   const pivot = block[1]; // ピボットをブロックの中心に設定
+  console.log(pivot);
   const newBlock = block.map(([x, y]) => {
     const relativeX = x - pivot[0];
     const relativeY = y - pivot[1];
@@ -306,7 +306,7 @@ const rotateBlock = (board: number[][]) => {
     }
     if (y >= 20) {
       while (y + slideY >= 20) {
-        slideY += 1;
+        slideY -= 1;
       }
     }
     // if (board[y][x] >= 11) {
