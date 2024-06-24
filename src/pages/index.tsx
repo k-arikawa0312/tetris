@@ -102,6 +102,39 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
       }
     }
   }
+  if (block.length === 0) {
+    const index = Math.floor(Math.random() * 7);
+    switch (index) {
+      case 0:
+        block.push([2, 1], [2, 2], [3, 2], [1, 2]);
+        kindOfBlock = 1;
+        break;
+      case 1:
+        block.push([0, 1], [1, 1], [2, 1], [3, 1]);
+        kindOfBlock = 2;
+        break;
+      case 2:
+        block.push([1, 1], [1, 2], [2, 1], [2, 2]);
+        kindOfBlock = 3;
+        break;
+      case 3:
+        block.push([1, 1], [2, 2], [3, 2], [1, 2]);
+        kindOfBlock = 4;
+        break;
+      case 4:
+        block.push([3, 1], [2, 2], [3, 2], [1, 2]);
+        kindOfBlock = 5;
+        break;
+      case 5:
+        block.push([2, 1], [2, 2], [3, 1], [1, 2]);
+        kindOfBlock = 6;
+        break;
+      case 6:
+        block.push([2, 1], [2, 2], [3, 2], [1, 1]);
+        kindOfBlock = 7;
+        break;
+    }
+  }
   for (const [x, y] of block) {
     if (newBoard[y - 1][x + 3] !== 0) {
       alert('gameover');
@@ -123,7 +156,7 @@ const deleteLine = (board: number[][]) => {
     isLine = newBoard[row].filter((cell) => cell !== 0).length;
     if (isLine === 10) {
       linePos.push(row);
-      removedLine += 1;
+      // removedLine += 1;
     }
   }
 
@@ -160,7 +193,7 @@ const fallBlock = (board: number[][]) => {
       for (const [nx, ny] of block) {
         newBoard[ny][nx] = newBoard[ny][nx] + 10;
       }
-      canChangeNextBlock = true;
+      // canChangeNextBlock = true;
       return newBoard;
     }
   }
@@ -493,6 +526,12 @@ const Home = () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    setNextBlock([
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ]);
     setIsActive(false);
     setCanChangeNextBlock(true);
