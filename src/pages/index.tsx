@@ -3,8 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 let canChangeNextBlock = true;
 let removedLine = 0;
-
-//中心座標を計算してここから回転先を作りそれを適
+const sevenBlockBag: number[] = [];
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -98,7 +97,6 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   const newBoard = structuredClone(board);
   let kindOfBlock = 0;
   // const newNextBlock = structuredClone(nextBlock);
-  console.table(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] !== 0) {
@@ -121,38 +119,38 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
 
 const deleteLine = (board: number[][]) => {
   let isLine = 0;
-  const deletePos = [];
-  const linePos = [];
+  const linePos: number[] = [];
   const newBoard = structuredClone(board);
+
   for (let row = 0; row < 20; row++) {
     isLine = newBoard[row].filter((cell) => cell !== 0).length;
-
     if (isLine === 10) {
-      for (let y = 0; y < 20; y++) {
-        if (board[y].filter((cell) => cell !== 0).length === 10) {
-          linePos.push(y);
-          removedLine += 1;
-        }
-      }
-      for (let x = 0; x < 10; x++) {
-        for (const row of linePos) deletePos.push([x, row]);
-      }
-
-      const deletedBoard: number[][] = changeBlock(newBoard, deletePos, 0);
-      const tempDeletedBoard: number[][] = structuredClone(deletedBoard);
-      for (let y = 19; y >= 0; y--) {
-        for (let x = 0; x < 10; x++) {
-          if (deletedBoard[y]?.[x] >= 11 && y + linePos.length < 20) {
-            deletedBoard[y + linePos.length][x] = tempDeletedBoard[y][x];
-            deletedBoard[y][x] = 0;
-            console.table(deletedBoard);
-          }
-        }
-      }
-      return deletedBoard;
+      linePos.push(row);
+      removedLine += 1;
     }
   }
-  return board;
+
+  for (const row of linePos) {
+    for (let x = 0; x < 10; x++) {
+      newBoard[row][x] = 0;
+    }
+  }
+
+  linePos.forEach((row) => {
+    for (let y = row; y > 0; y--) {
+      for (let x = 0; x < 10; x++) {
+        newBoard[y][x] = newBoard[y - 1][x];
+      }
+    }
+  });
+
+  if (linePos.length > 0) {
+    for (let x = 0; x < 10; x++) {
+      newBoard[0][x] = 0;
+    }
+  }
+
+  return newBoard;
 };
 
 const fallBlock = (board: number[][]) => {
@@ -281,7 +279,6 @@ const rotateBlock = (board: number[][]) => {
   }
 
   const pivot = block[1]; // ピボットをブロックの中心に設定
-  console.log(pivot);
   const newBlock = block.map(([x, y]) => {
     const relativeX = x - pivot[0];
     const relativeY = y - pivot[1];
@@ -371,7 +368,6 @@ const Home = () => {
   // ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const sevenBlockBag: number[] = [];
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -448,6 +444,8 @@ const Home = () => {
       setBoard(renewalBoard);
       const newNextBlock = changeNextBlock(nextBlock, kindOfBlock[1]);
       setNextBlock(newNextBlock);
+      console.log(sevenBlockBag);
+      console.log(kindOfBlock);
       canChangeNextBlock = false;
     } else {
       setBoard(newBoard);
@@ -569,6 +567,5 @@ const Home = () => {
     </div>
   );
 };
-//動いてるやつ10足す動いてないやつ１０引く
 
 export default Home;
