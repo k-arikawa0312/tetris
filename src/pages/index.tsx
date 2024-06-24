@@ -1,10 +1,6 @@
 import styles from './index.module.css';
 import React, { useEffect, useState, useRef } from 'react';
 
-let canChangeNextBlock = true;
-let removedLine = 0;
-let sevenBlockBag: number[] = [];
-
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
 
@@ -82,6 +78,7 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
       newNextBlock[1][3] = 6;
       newNextBlock[2][1] = 6; //s green
       break;
+
     case 6:
       newNextBlock[1][2] = 7;
       newNextBlock[2][2] = 7;
@@ -347,17 +344,12 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const [nextBlock, setNextBlock] = useState(
-    changeNextBlock(
-      [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ],
-      Math.floor(Math.random() * 7),
-    ),
-  );
+  const [nextBlock, setNextBlock] = useState([
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ]);
 
   // const [holdBlock, setHoldBlock] = useState([
   //   [0, 1, 0, 0],
@@ -367,6 +359,10 @@ const Home = () => {
   // ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
+
+  const [canChangeNextBlock, setCanChangeNextBlock] = useState(true);
+  const [removedLine, setRemovedLine] = useState(0);
+  const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -425,13 +421,13 @@ const Home = () => {
       const deletedBoard = deleteLine(newBoard);
       let decidedBlock = Math.floor(Math.random() * 7);
 
-      if (sevenBlockBag.length === 0) {
-        sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
-      }
       while (!sevenBlockBag.includes(decidedBlock)) {
         decidedBlock = Math.floor(Math.random() * 7);
       }
       sevenBlockBag.splice(sevenBlockBag.indexOf(decidedBlock), 1);
+      if (sevenBlockBag.length === 0) {
+        setSevenBlockBag([0, 1, 2, 3, 4, 5, 6]);
+      }
 
       const renewalBoard = renewalBlock(deletedBoard, nextBlock);
 
@@ -439,7 +435,7 @@ const Home = () => {
       const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
       setNextBlock(newNextBlock);
       console.log(sevenBlockBag);
-      canChangeNextBlock = false;
+      setCanChangeNextBlock(false);
     } else {
       setBoard(newBoard);
     }
@@ -499,9 +495,9 @@ const Home = () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]);
     setIsActive(false);
-    canChangeNextBlock = true;
+    setCanChangeNextBlock(true);
     setSeconds(0);
-    removedLine = 0;
+    setRemovedLine(0);
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
