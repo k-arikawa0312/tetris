@@ -183,18 +183,22 @@ const deleteLine = (board: number[][]) => {
   return newBoard;
 };
 
-const fallBlock = (board: number[][]) => {
+const fallBlock = (board: number[][]): [number[][], boolean] => {
   const position = [];
   const newBoard = structuredClone(board);
   const block = makeBlock(newBoard);
+
+  if (block.length === 0) {
+    return [newBoard, true];
+  }
 
   for (const [tx, ty] of block) {
     if (ty === 19 || tx === -1 || newBoard[ty + 1]?.[tx] >= 11) {
       for (const [nx, ny] of block) {
         newBoard[ny][nx] = newBoard[ny][nx] + 10;
       }
-      // canChangeNextBlock = true;
-      return newBoard;
+
+      return [newBoard, true];
     }
   }
 
@@ -216,11 +220,11 @@ const fallBlock = (board: number[][]) => {
             newBoard[ty][tx] = 0;
           }
         }
-        return changeBlock(newBoard, position, nowKindOfBlock(board));
+        return [changeBlock(newBoard, position, nowKindOfBlock(board)), false];
       }
     }
   }
-  return newBoard;
+  return [newBoard, false];
 };
 
 const moveLeftBlock = (board: number[][]) => {
@@ -393,7 +397,6 @@ const Home = () => {
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
 
-  const [canChangeNextBlock, setCanChangeNextBlock] = useState(true);
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
 
@@ -441,7 +444,8 @@ const Home = () => {
     } else if (key === 'ArrowUp') {
       spinBlock();
     } else if (key === ' ') {
-      hardDrop();
+      // hardDrop();
+      console.log();
     } else if (key === 'c') {
       console.log('c');
     }
@@ -449,7 +453,7 @@ const Home = () => {
   };
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
-    const newBoard = fallBlock(board);
+    const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
       const deletedBoard = deleteLine(newBoard);
       let decidedBlock = Math.floor(Math.random() * 7);
@@ -468,7 +472,6 @@ const Home = () => {
       const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
       setNextBlock(newNextBlock);
       console.log(sevenBlockBag);
-      setCanChangeNextBlock(false);
     } else {
       setBoard(newBoard);
     }
@@ -481,19 +484,19 @@ const Home = () => {
     const newBoard = moveRightBlock(board);
     setBoard(newBoard);
   };
-  const hardDrop = () => {
-    let newBoard = board;
-    let wasDropped = false;
+  // const hardDrop = () => {
+  //   let newBoard = board;
+  //   let wasDropped = false;
 
-    do {
-      const tempBoard = fallBlock(newBoard);
+  //   do {
+  //     const tempBoard = fallBlock(newBoard);
 
-      wasDropped = newBoard !== tempBoard;
+  //     wasDropped = newBoard !== tempBoard;
 
-      newBoard = tempBoard;
-    } while (wasDropped);
-    setBoard(newBoard);
-  };
+  //     newBoard = tempBoard;
+  //   } while (wasDropped);
+  //   setBoard(newBoard);
+  // };
   const spinBlock = () => {
     const newBoard = rotateBlock(board);
     setBoard(newBoard);
@@ -534,7 +537,6 @@ const Home = () => {
       [0, 0, 0, 0],
     ]);
     setIsActive(false);
-    setCanChangeNextBlock(true);
     setSeconds(0);
     setRemovedLine(0);
   };
