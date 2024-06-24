@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 let canChangeNextBlock = true;
 let removedLine = 0;
-const sevenBlockBag: number[] = [];
+let sevenBlockBag: number[] = [];
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -347,7 +347,6 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const [kindOfBlock, setKindOfBlock] = useState([Math.floor(Math.random() * 7), 0]);
   const [nextBlock, setNextBlock] = useState(
     changeNextBlock(
       [
@@ -427,25 +426,19 @@ const Home = () => {
       let decidedBlock = Math.floor(Math.random() * 7);
 
       if (sevenBlockBag.length === 0) {
-        for (let n = 0; n < 7; n++) {
-          sevenBlockBag.push(n);
-        }
+        sevenBlockBag = [0, 1, 2, 3, 4, 5, 6];
       }
       while (!sevenBlockBag.includes(decidedBlock)) {
         decidedBlock = Math.floor(Math.random() * 7);
       }
-      const index = sevenBlockBag.indexOf(decidedBlock);
-      sevenBlockBag.splice(index, 1);
-      const newKindOfBlock = index;
-      setKindOfBlock([nowKindOfBlock(board), newKindOfBlock]);
+      sevenBlockBag.splice(sevenBlockBag.indexOf(decidedBlock), 1);
 
       const renewalBoard = renewalBlock(deletedBoard, nextBlock);
 
       setBoard(renewalBoard);
-      const newNextBlock = changeNextBlock(nextBlock, kindOfBlock[1]);
+      const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
       setNextBlock(newNextBlock);
       console.log(sevenBlockBag);
-      console.log(kindOfBlock);
       canChangeNextBlock = false;
     } else {
       setBoard(newBoard);
