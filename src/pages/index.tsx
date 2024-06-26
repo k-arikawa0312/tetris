@@ -306,55 +306,58 @@ const moveRightBlock = (board: number[][]) => {
 const rotateBlock = (board: number[][]) => {
   const block = makeBlock(board);
   const kindOfBlock = nowKindOfBlock(board);
-  let slideX = 0;
-  let slideY = 0;
+  const slideOffsets = [
+    [0, 0],
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+    [-1, -1],
+    [-1, 1],
+    [1, -1],
+    [1, 1],
+  ];
 
   if (block.length !== 4 || kindOfBlock === 3) {
-    return board; // 安全策: ブロックが正しい形状でない場合は回転しない
+    return board;
   }
 
-  const pivot = block[1]; // ピボットをブロックの中心に設定
+  const pivot = block[1];
   const newBlock = block.map(([x, y]) => {
     const relativeX = x - pivot[0];
     const relativeY = y - pivot[1];
-    return [pivot[0] - relativeY, pivot[1] + relativeX]; // 90度回転
+    return [pivot[0] - relativeY, pivot[1] + relativeX];
   });
 
-  for (const [x, y] of newBlock) {
-    if (x < 0) {
-      while (x + slideX < 0) {
-        slideX += 1;
-      }
-    }
-    if (x >= 10) {
-      while (x + slideX >= 10) {
-        slideX -= 1;
-      }
-    }
-    if (y < 0) {
-      while (y + slideY < 0) {
-        slideY += 1;
-      }
-    }
-    if (y >= 20) {
-      while (y + slideY >= 20) {
-        slideY -= 1;
-      }
-    }
-    // if (board[y][x] >= 11) {
-    // }
-  }
-
   const newBoard = structuredClone(board);
-  for (const [x, y] of block) {
-    newBoard[y][x] = 0;
+
+  for (const [slideX, slideY] of slideOffsets) {
+    let collision = false;
+    for (const [x, y] of newBlock) {
+      if (
+        y + slideY < 0 ||
+        y + slideY >= 20 ||
+        x + slideX < 0 ||
+        x + slideX >= 10 ||
+        board[y + slideY]?.[x + slideX] >= 11
+      ) {
+        collision = true;
+        break;
+      }
+    }
+
+    if (!collision) {
+      for (const [x, y] of block) {
+        newBoard[y][x] = 0;
+      }
+      for (const [x, y] of newBlock) {
+        newBoard[y + slideY][x + slideX] = kindOfBlock;
+      }
+      return newBoard;
+    }
   }
 
-  for (const [x, y] of newBlock) {
-    newBoard[y + slideY][x + slideX] = kindOfBlock;
-  }
-
-  return newBoard;
+  return board;
 };
 
 const Home = () => {
@@ -376,7 +379,6 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -529,7 +531,6 @@ const Home = () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
