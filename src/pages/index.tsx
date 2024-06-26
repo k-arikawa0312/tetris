@@ -448,11 +448,14 @@ const Home = () => {
     let interval = 0;
 
     if (isActive) {
-      interval = window.setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds + 1);
-      }, 1000);
+      interval = window.setInterval(
+        () => {
+          setSeconds((prevSeconds) => prevSeconds + 1);
+        },
+        -Math.floor(removedLine / 10) * 1000 + 1000,
+      );
     }
-
+    console.log(1000 - Math.floor(removedLine / 10) * 100);
     if (audioRef.current !== null) {
       audioRef.current.play();
     }
@@ -493,7 +496,6 @@ const Home = () => {
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
     const [newBoard, canChangeNextBlock] = fallBlock(board);
-    console.log(4545);
     if (canChangeNextBlock) {
       setTurnNums(0);
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
@@ -537,7 +539,6 @@ const Home = () => {
       const [tempBoard, tempCanChangeNextBlock] = fallBlock(newBoard);
       newBoard = tempBoard;
       canChangeNextBlock = tempCanChangeNextBlock;
-      console.log(tempCanChangeNextBlock);
     }
     setBoard(newBoard);
     setTurnNums(0);
