@@ -449,36 +449,43 @@ const Home = () => {
   }, [seconds]);
 
   useEffect(() => {
-    const keyHandler = (event: KeyboardEvent) => {
+    const turnHandler = (event: KeyboardEvent) => {
       event.preventDefault();
 
       if (!isActive) return;
       const key = event.key;
-      if (key === 'ArrowDown') {
-        downBlock();
-      } else if (key === 'ArrowLeft') {
-        leftBlock();
-      } else if (key === 'ArrowRight') {
-        rightBlock();
-      } else if (key === 'ArrowUp') {
+      if (key === 'ArrowUp') {
         spinBlock();
-      } else if (key === ' ') {
-        hardDrop();
-        console.log();
-      } else if (key === 'c') {
-        console.log('c');
       }
-      return;
     };
 
-    window.addEventListener('keydown', keyHandler);
+    window.addEventListener('keydown', turnHandler);
 
     return () => {
-      window.removeEventListener('keydown', keyHandler);
+      window.removeEventListener('keydown', turnHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delay]);
 
+  const keyHandler = (event: React.KeyboardEvent) => {
+    event.preventDefault();
+
+    if (!isActive) return;
+    const key = event.key;
+    if (key === 'ArrowDown') {
+      downBlock();
+    } else if (key === 'ArrowLeft') {
+      leftBlock();
+    } else if (key === 'ArrowRight') {
+      rightBlock();
+    } else if (key === ' ') {
+      hardDrop();
+      console.log();
+    } else if (key === 'c') {
+      console.log('c');
+    }
+    return;
+  };
   const downBlock = () => {
     const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
@@ -570,7 +577,7 @@ const Home = () => {
     setRemovedLine(0);
   };
   return (
-    <div className={styles.container} tabIndex={0}>
+    <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
       <div>
         <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
