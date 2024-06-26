@@ -1,5 +1,5 @@
 import styles from './index.module.css';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const changeBlock = (board: number[][], position: number[][], toChange: number) => {
   const newBoard = structuredClone(board);
@@ -442,8 +442,6 @@ const Home = () => {
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-
   useEffect(() => {
     let interval = 0;
 
@@ -452,17 +450,13 @@ const Home = () => {
         () => {
           setSeconds((prevSeconds) => prevSeconds + 1);
         },
-        -Math.floor(removedLine / 10) * 1000 + 1000,
+        -Math.floor(removedLine / 10) * 100 + 1000,
       );
-    }
-    console.log(1000 - Math.floor(removedLine / 10) * 100);
-    if (audioRef.current !== null) {
-      audioRef.current.play();
     }
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive]);
+  }, [seconds, isActive]);
 
   useEffect(() => {
     let isDropping = true;
@@ -640,7 +634,6 @@ const Home = () => {
         >
           {isActive ? 'pause' : 'start'}
         </button>
-        <button style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}>sound</button>
         <button
           style={{ width: 70, height: 30, fontSize: 20, marginBottom: 10 }}
           onClick={resetGame}
@@ -664,7 +657,6 @@ const Home = () => {
           )),
         )}
       </div>
-      <audio ref={audioRef} src="./bgm.mp3" loop />
     </div>
   );
 };
