@@ -546,7 +546,7 @@ const Home = () => {
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
-      RemovedLine:{removedLine}
+      <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
       <div>
         <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
         <div className={styles.nextBlockBoard}>
