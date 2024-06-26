@@ -316,13 +316,14 @@ const rotateBlock = (board: number[][]) => {
     [-1, 1],
     [1, -1],
     [1, 1],
+    [2, 0],
   ];
 
   if (block.length !== 4 || kindOfBlock === 3) {
     return board;
   }
 
-  const pivot = block[1];
+  const pivot = calculateCenterPivot(block);
   const newBlock = block.map(([x, y]) => {
     const relativeX = x - pivot[0];
     const relativeY = y - pivot[1];
@@ -360,6 +361,15 @@ const rotateBlock = (board: number[][]) => {
   return board;
 };
 
+const calculateCenterPivot = (block: number[][]) => {
+  let sumX = 0;
+  let sumY = 0;
+  for (const [x, y] of block) {
+    sumX += x;
+    sumY += y;
+  }
+  return [Math.floor(sumX / block.length), Math.floor(sumY / block.length)];
+};
 const Home = () => {
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -402,60 +412,74 @@ const Home = () => {
 
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
+  const [delay, setDelay] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     let interval = 0;
+    let keyInterval = 0;
 
     if (isActive) {
       interval = window.setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds + 1);
       }, 1000);
     }
+    keyInterval = window.setInterval(() => {
+      setDelay((prevDelay) => prevDelay + 1);
+    }, 142);
 
     if (audioRef.current !== null) {
       audioRef.current.play();
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearInterval(keyInterval);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
   useEffect(() => {
-    let isDropping = true;
-
     if (isActive) {
-      downBlock(!isDropping);
-      isDropping = false;
+      downBlock();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
-  const keyHandler = (event: React.KeyboardEvent) => {
-    event.preventDefault();
+  useEffect(() => {
+    const keyHandler = (event: KeyboardEvent) => {
+      event.preventDefault();
 
-    if (!isActive) return;
-    const key = event.key;
-    if (key === 'ArrowDown') {
-      downBlock(false);
-    } else if (key === 'ArrowLeft') {
-      leftBlock();
-    } else if (key === 'ArrowRight') {
-      rightBlock();
-    } else if (key === 'ArrowUp') {
-      spinBlock();
-    } else if (key === ' ') {
-      hardDrop();
-      console.log();
-    } else if (key === 'c') {
-      console.log('c');
-    }
-    return;
-  };
-  const downBlock = (isDropping: boolean) => {
-    if (isDropping) return board;
+      if (!isActive) return;
+      const key = event.key;
+      if (key === 'ArrowDown') {
+        downBlock();
+      } else if (key === 'ArrowLeft') {
+        leftBlock();
+      } else if (key === 'ArrowRight') {
+        rightBlock();
+      } else if (key === 'ArrowUp') {
+        spinBlock();
+      } else if (key === ' ') {
+        hardDrop();
+        console.log();
+      } else if (key === 'c') {
+        console.log('c');
+      }
+      return;
+    };
+
+    window.addEventListener('keydown', keyHandler);
+
+    return () => {
+      window.removeEventListener('keydown', keyHandler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [delay]);
+
+  const downBlock = () => {
     const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
@@ -500,7 +524,7 @@ const Home = () => {
     }
     console.table(newBoard);
     setBoard(newBoard);
-    downBlock(false);
+    downBlock();
     console.log('end');
   };
   const spinBlock = () => {
@@ -546,7 +570,7 @@ const Home = () => {
     setRemovedLine(0);
   };
   return (
-    <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
+    <div className={styles.container} tabIndex={0}>
       <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
       <div>
         <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
