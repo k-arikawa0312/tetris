@@ -89,7 +89,7 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
   return newNextBlock;
 };
 
-const renewalBlock = (board: number[][], nextBlock: number[][]) => {
+const renewalBlock = (board: number[][], nextBlock: number[][]): [number[][], boolean] => {
   const block = [];
   const newBoard = structuredClone(board);
   let kindOfBlock = 0;
@@ -137,14 +137,13 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   }
   for (const [x, y] of block) {
     if (newBoard[y - 1][x + 3] !== 0) {
-      alert('gameover');
-      return newBoard;
+      return [board, true];
     }
   }
   for (const [x, y] of block) {
     newBoard[y - 1][x + 3] = kindOfBlock;
   }
-  return newBoard;
+  return [newBoard, false];
 };
 
 const deleteLine = (board: number[][]): [number[][], number] => {
@@ -488,9 +487,6 @@ const Home = () => {
       spinBlock();
     } else if (key === ' ') {
       hardDrop();
-      console.log();
-    } else if (key === 'c') {
-      console.log('c');
     }
     return;
   };
@@ -512,12 +508,15 @@ const Home = () => {
         setSevenBlockBag([0, 1, 2, 3, 4, 5, 6]);
       }
 
-      const renewalBoard = renewalBlock(deletedBoard, nextBlock);
-
-      setBoard(renewalBoard);
-      const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
-      setNextBlock(newNextBlock);
-      console.log(sevenBlockBag);
+      const [renewalBoard, isGameOver] = renewalBlock(deletedBoard, nextBlock);
+      if (isGameOver) {
+        alert('Game Over!');
+        resetGame();
+      } else {
+        setBoard(renewalBoard);
+        const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
+        setNextBlock(newNextBlock);
+      }
     } else {
       setBoard(newBoard);
     }
@@ -554,12 +553,15 @@ const Home = () => {
       setSevenBlockBag([0, 1, 2, 3, 4, 5, 6]);
     }
 
-    const renewalBoard = renewalBlock(deletedBoard, nextBlock);
-
-    setBoard(renewalBoard);
-    const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
-    setNextBlock(newNextBlock);
-    console.log('end');
+    const [renewalBoard, isGameOver] = renewalBlock(deletedBoard, nextBlock);
+    if (isGameOver) {
+      alert('Game Over!');
+      resetGame();
+    } else {
+      setBoard(renewalBoard);
+      const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
+      setNextBlock(newNextBlock);
+    }
   };
   const spinBlock = () => {
     const newBoard = rotateBlock(board, turnNums);
