@@ -318,12 +318,18 @@ const rotateBlock = (board: number[][]) => {
     [1, 1],
     [2, 0],
   ];
-
+  let pivot = [0, 0];
+  pivot = block[1];
   if (block.length !== 4 || kindOfBlock === 3) {
     return board;
   }
+  if (kindOfBlock === 1) {
+    pivot = block[1];
+    if (block[0][0] !== block[1][0] && block[0][1] !== block[1][1]) {
+      pivot = block[2];
+    }
+  }
 
-  const pivot = calculateCenterPivot(block);
   const newBlock = block.map(([x, y]) => {
     const relativeX = x - pivot[0];
     const relativeY = y - pivot[1];
@@ -361,15 +367,6 @@ const rotateBlock = (board: number[][]) => {
   return board;
 };
 
-const calculateCenterPivot = (block: number[][]) => {
-  let sumX = 0;
-  let sumY = 0;
-  for (const [x, y] of block) {
-    sumX += x;
-    sumY += y;
-  }
-  return [Math.floor(sumX / block.length), Math.floor(sumY / block.length)];
-};
 const Home = () => {
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -412,60 +409,36 @@ const Home = () => {
 
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
-  const [delay, setDelay] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     let interval = 0;
-    let keyInterval = 0;
 
     if (isActive) {
       interval = window.setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds + 1);
       }, 1000);
     }
-    keyInterval = window.setInterval(() => {
-      setDelay((prevDelay) => prevDelay + 1);
-    }, 142);
 
     if (audioRef.current !== null) {
       audioRef.current.play();
     }
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(keyInterval);
-    };
+    return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
   useEffect(() => {
+    let isDropping = true;
+
     if (isActive) {
-      downBlock();
+      downBlock(!isDropping);
+      isDropping = false;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
-
-  useEffect(() => {
-    const turnHandler = (event: KeyboardEvent) => {
-      event.preventDefault();
-
-      if (!isActive) return;
-      const key = event.key;
-      if (key === 'ArrowUp') {
-        spinBlock();
-      }
-    };
-
-    window.addEventListener('keydown', turnHandler);
-
-    return () => {
-      window.removeEventListener('keydown', turnHandler);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delay]);
 
   const keyHandler = (event: React.KeyboardEvent) => {
     event.preventDefault();
@@ -473,11 +446,13 @@ const Home = () => {
     if (!isActive) return;
     const key = event.key;
     if (key === 'ArrowDown') {
-      downBlock();
+      downBlock(false);
     } else if (key === 'ArrowLeft') {
       leftBlock();
     } else if (key === 'ArrowRight') {
       rightBlock();
+    } else if (key === 'ArrowUp') {
+      spinBlock();
     } else if (key === ' ') {
       hardDrop();
       console.log();
@@ -486,7 +461,8 @@ const Home = () => {
     }
     return;
   };
-  const downBlock = () => {
+  const downBlock = (isDropping: boolean) => {
+    if (isDropping) return board;
     const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
@@ -531,7 +507,7 @@ const Home = () => {
     }
     console.table(newBoard);
     setBoard(newBoard);
-    downBlock();
+    downBlock(false);
     console.log('end');
   };
   const spinBlock = () => {
