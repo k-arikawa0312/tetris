@@ -303,7 +303,7 @@ const moveRightBlock = (board: number[][]) => {
   }
   return board;
 };
-const rotateBlock = (board: number[][]) => {
+const rotateBlock = (board: number[][], turnNums: number) => {
   const block = makeBlock(board);
   const kindOfBlock = nowKindOfBlock(board);
   const slideOffsets = [
@@ -324,22 +324,42 @@ const rotateBlock = (board: number[][]) => {
     return board;
   }
   if (kindOfBlock === 1) {
-    pivot = block[1];
     if (block[0][0] !== block[1][0] && block[0][1] !== block[1][1]) {
       pivot = block[2];
     }
+  } else if (kindOfBlock === 2) {
+    if (turnNums === 1 || turnNums === 2) {
+      pivot = block[2];
+    }
   } else if (kindOfBlock === 4) {
-    pivot = block[1];
     if (block[0][0] !== block[2][0] && block[0][1] !== block[2][1]) {
       pivot = block[2];
     }
   } else if (kindOfBlock === 5) {
-    pivot = block[1];
     if (
       (block[2][1] < block[3][1] && block[1][0] === block[3][0]) ||
       (block[2][1] === block[3][1] && block[0][1] === block[2][1])
     ) {
       pivot = block[2];
+    }
+  } else if (kindOfBlock === 6) {
+    if (turnNums === 0 || turnNums === 3) {
+      pivot = block[2];
+    }
+  } else if (kindOfBlock === 7) {
+    switch (turnNums) {
+      case 0:
+        pivot = block[2];
+        break;
+      case 1:
+        pivot = block[0];
+        break;
+      case 2:
+        pivot = block[1];
+        break;
+      case 3:
+        pivot = block[3];
+        break;
     }
   }
 
@@ -419,7 +439,7 @@ const Home = () => {
   // ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
-
+  const [turnNums, setTurnNums] = useState(0);
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
 
@@ -478,6 +498,7 @@ const Home = () => {
     if (isDropping) return board;
     const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
+      setTurnNums(0);
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
       setRemovedLine(removedLine + newRemovedLine);
       let decidedBlock = Math.floor(Math.random() * 7);
@@ -524,7 +545,11 @@ const Home = () => {
     console.log('end');
   };
   const spinBlock = () => {
-    const newBoard = rotateBlock(board);
+    const newBoard = rotateBlock(board, turnNums);
+    setTurnNums(turnNums + 1);
+    if (turnNums === 3) {
+      setTurnNums(0);
+    }
     setBoard(newBoard);
   };
 
@@ -564,10 +589,14 @@ const Home = () => {
     setIsActive(false);
     setSeconds(0);
     setRemovedLine(0);
+    setTurnNums(0);
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
-      <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
+      <label style={{ fontSize: 20 }}>
+        RemovedLine:{removedLine}
+        {turnNums}
+      </label>
       <div>
         <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
         <div className={styles.nextBlockBoard}>
