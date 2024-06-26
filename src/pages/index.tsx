@@ -497,6 +497,7 @@ const Home = () => {
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
     const [newBoard, canChangeNextBlock] = fallBlock(board);
+    console.log(4545);
     if (canChangeNextBlock) {
       setTurnNums(0);
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
@@ -539,9 +540,25 @@ const Home = () => {
       canChangeNextBlock = tempCanChangeNextBlock;
       console.log(tempCanChangeNextBlock);
     }
-    console.table(newBoard);
     setBoard(newBoard);
-    downBlock(false);
+    setTurnNums(0);
+    const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
+    setRemovedLine(removedLine + newRemovedLine);
+    let decidedBlock = Math.floor(Math.random() * 7);
+
+    while (!sevenBlockBag.includes(decidedBlock)) {
+      decidedBlock = Math.floor(Math.random() * 7);
+    }
+    sevenBlockBag.splice(sevenBlockBag.indexOf(decidedBlock), 1);
+    if (sevenBlockBag.length === 0) {
+      setSevenBlockBag([0, 1, 2, 3, 4, 5, 6]);
+    }
+
+    const renewalBoard = renewalBlock(deletedBoard, nextBlock);
+
+    setBoard(renewalBoard);
+    const newNextBlock = changeNextBlock(nextBlock, decidedBlock);
+    setNextBlock(newNextBlock);
     console.log('end');
   };
   const spinBlock = () => {
@@ -593,10 +610,7 @@ const Home = () => {
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
-      <label style={{ fontSize: 20 }}>
-        RemovedLine:{removedLine}
-        {turnNums}
-      </label>
+      <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
       <div>
         <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
         <div className={styles.nextBlockBoard}>
