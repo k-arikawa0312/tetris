@@ -328,6 +328,11 @@ const rotateBlock = (board: number[][]) => {
     if (block[0][0] !== block[1][0] && block[0][1] !== block[1][1]) {
       pivot = block[2];
     }
+  } else if (kindOfBlock === 4) {
+    pivot = block[1];
+    if (block[0][0] !== block[2][0] && block[0][1] !== block[2][1]) {
+      pivot = block[2];
+    }
   }
 
   const newBlock = block.map(([x, y]) => {
