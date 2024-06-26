@@ -147,16 +147,17 @@ const renewalBlock = (board: number[][], nextBlock: number[][]) => {
   return newBoard;
 };
 
-const deleteLine = (board: number[][]) => {
+const deleteLine = (board: number[][]): [number[][], number] => {
   let isLine = 0;
   const linePos: number[] = [];
   const newBoard = structuredClone(board);
+  let removedLine = 0;
 
   for (let row = 0; row < 20; row++) {
     isLine = newBoard[row].filter((cell) => cell !== 0).length;
     if (isLine === 10) {
       linePos.push(row);
-      // removedLine += 1;
+      removedLine += 1;
     }
   }
 
@@ -180,7 +181,7 @@ const deleteLine = (board: number[][]) => {
     }
   }
 
-  return newBoard;
+  return [newBoard, removedLine];
 };
 
 const fallBlock = (board: number[][]): [number[][], boolean] => {
@@ -444,7 +445,7 @@ const Home = () => {
     } else if (key === 'ArrowUp') {
       spinBlock();
     } else if (key === ' ') {
-      // hardDrop();
+      hardDrop();
       console.log();
     } else if (key === 'c') {
       console.log('c');
@@ -455,7 +456,8 @@ const Home = () => {
     if (isDropping) return board;
     const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
-      const deletedBoard = deleteLine(newBoard);
+      const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
+      setRemovedLine(removedLine + newRemovedLine);
       let decidedBlock = Math.floor(Math.random() * 7);
 
       while (!sevenBlockBag.includes(decidedBlock)) {
@@ -484,19 +486,21 @@ const Home = () => {
     const newBoard = moveRightBlock(board);
     setBoard(newBoard);
   };
-  // const hardDrop = () => {
-  //   let newBoard = board;
-  //   let wasDropped = false;
+  const hardDrop = () => {
+    let newBoard = board;
+    let canChangeNextBlock = false;
 
-  //   do {
-  //     const tempBoard = fallBlock(newBoard);
-
-  //     wasDropped = newBoard !== tempBoard;
-
-  //     newBoard = tempBoard;
-  //   } while (wasDropped);
-  //   setBoard(newBoard);
-  // };
+    while (!canChangeNextBlock) {
+      const [tempBoard, tempCanChangeNextBlock] = fallBlock(newBoard);
+      newBoard = tempBoard;
+      canChangeNextBlock = tempCanChangeNextBlock;
+      console.log(tempCanChangeNextBlock);
+    }
+    console.table(newBoard);
+    setBoard(newBoard);
+    downBlock(false);
+    console.log('end');
+  };
   const spinBlock = () => {
     const newBoard = rotateBlock(board);
     setBoard(newBoard);
@@ -544,7 +548,7 @@ const Home = () => {
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       RemovedLine:{removedLine}
       <div>
-        <label>next block</label>
+        <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
         <div className={styles.nextBlockBoard}>
           {nextBlock.map((row, y) =>
             row.map((display, x) => (
