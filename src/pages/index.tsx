@@ -31,7 +31,7 @@ const nowKindOfBlock = (board: number[][]) => {
       }
     }
   }
-  return 0;
+  return -1;
 };
 const changeNextBlock = (nextBlock: number[][], index: number) => {
   const newNextBlock = structuredClone(nextBlock);
@@ -93,7 +93,6 @@ const renewalBlock = (board: number[][], nextBlock: number[][]): [number[][], bo
   const block = [];
   const newBoard = structuredClone(board);
   let kindOfBlock = 0;
-  // const newNextBlock = structuredClone(nextBlock);
   for (let x = 0; x < 4; x++) {
     for (let y = 0; y < 4; y++) {
       if (nextBlock[y][x] !== 0) {
@@ -398,6 +397,82 @@ const rotateBlock = (board: number[][], turnNums: number) => {
 
   return board;
 };
+const saveBlock = (board: number[][], holdBlock: number[][]): [number[][], number[][]] => {
+  const kindOfBlockOfBoard = nowKindOfBlock(board);
+  let kindOfBlockOfHold = 0;
+  const blockOfBoard = [];
+  const blockOfHold = [];
+  const newBoard = structuredClone(board);
+  const newHoldBlock = structuredClone(holdBlock);
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 20; y++) {
+      if (newBoard[y][x] !== 0 && newBoard[y][x] < 10) {
+        newBoard[y][x] = 0;
+      }
+    }
+  }
+  for (let y = 0; y < 4; y++) {
+    for (let x = 0; x < 4; x++) {
+      kindOfBlockOfHold = newHoldBlock[y][x];
+      newHoldBlock[y][x] = 0;
+    }
+  }
+  if (kindOfBlockOfHold !== -1) {
+    switch (kindOfBlockOfHold - 1) {
+      case 0:
+        blockOfBoard.push([2, 1], [2, 2], [3, 2], [1, 2]);
+        break;
+      case 1:
+        blockOfBoard.push([0, 1], [1, 1], [2, 1], [3, 1]);
+        break;
+      case 2:
+        blockOfBoard.push([1, 1], [1, 2], [2, 1], [2, 2]);
+        break;
+      case 3:
+        blockOfBoard.push([1, 1], [2, 2], [3, 2], [1, 2]);
+        break;
+      case 4:
+        blockOfBoard.push([3, 1], [2, 2], [3, 2], [1, 2]);
+        break;
+      case 5:
+        blockOfBoard.push([2, 1], [2, 2], [3, 1], [1, 2]);
+        break;
+      case 6:
+        blockOfBoard.push([2, 1], [2, 2], [3, 2], [1, 1]);
+        break;
+    }
+  }
+  switch (kindOfBlockOfBoard - 1) {
+    case 0:
+      blockOfHold.push([2, 1], [2, 2], [3, 2], [1, 2]);
+      break;
+    case 1:
+      blockOfHold.push([0, 1], [1, 1], [2, 1], [3, 1]);
+      break;
+    case 2:
+      blockOfHold.push([1, 1], [1, 2], [2, 1], [2, 2]);
+      break;
+    case 3:
+      blockOfHold.push([1, 1], [2, 2], [3, 2], [1, 2]);
+      break;
+    case 4:
+      blockOfHold.push([3, 1], [2, 2], [3, 2], [1, 2]);
+      break;
+    case 5:
+      blockOfHold.push([2, 1], [2, 2], [3, 1], [1, 2]);
+      break;
+    case 6:
+      blockOfHold.push([2, 1], [2, 2], [3, 2], [1, 1]);
+      break;
+  }
+  for (const [x, y] of blockOfBoard) {
+    newBoard[y - 1][x + 3] = kindOfBlockOfHold;
+  }
+  for (const [x, y] of blockOfHold) {
+    newHoldBlock[y][x] = kindOfBlockOfBoard;
+  }
+  return [newBoard, newHoldBlock];
+};
 
 const Home = () => {
   const [board, setBoard] = useState([
@@ -441,6 +516,7 @@ const Home = () => {
   const [turnNums, setTurnNums] = useState(0);
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
+  const [isHold, setIsHold] = useState(false); //holdした
 
   useEffect(() => {
     let interval = 0;
@@ -484,6 +560,8 @@ const Home = () => {
       spinBlock();
     } else if (key === ' ') {
       hardDrop();
+    } else if (key === 'c') {
+      blockHold(isHold);
     }
     return;
   };
@@ -492,6 +570,7 @@ const Home = () => {
     const [newBoard, canChangeNextBlock] = fallBlock(board);
     if (canChangeNextBlock) {
       setTurnNums(0);
+      setIsHold(false);
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
       setRemovedLine(removedLine + newRemovedLine);
       let decidedBlock = Math.floor(Math.random() * 7);
@@ -567,6 +646,13 @@ const Home = () => {
     setBoard(newBoard);
   };
 
+  const blockHold = (isHold: boolean) => {
+    if (isHold) return;
+    const [holdBoard, savedHold] = saveBlock(board, holdBlock);
+    setBoard(holdBoard);
+    setHoldBlock(savedHold);
+    setIsHold(true);
+  };
   const switchOnOff = () => {
     setIsActive(!isActive);
   };
@@ -610,6 +696,7 @@ const Home = () => {
     setSeconds(0);
     setRemovedLine(0);
     setTurnNums(0);
+    setIsHold(false);
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
