@@ -430,12 +430,12 @@ const Home = () => {
     [0, 0, 0, 0],
   ]);
 
-  // const [holdBlock, setHoldBlock] = useState([
-  //   [0, 1, 0, 0],
-  //   [0, 1, 0, 0],
-  //   [0, 1, 0, 0],
-  //   [0, 1, 0, 0],
-  // ]);
+  const [holdBlock, setHoldBlock] = useState([
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ]);
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [turnNums, setTurnNums] = useState(0);
@@ -608,10 +608,28 @@ const Home = () => {
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
-      <div>
-        <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>next</label>
+      <div className={styles.topArea}>
+        <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>Next</label>
         <div className={styles.nextBlockBoard}>
           {nextBlock.map((row, y) =>
+            row.map((display, x) => (
+              <div className={styles.cell} key={`${x}-${y}`}>
+                {display === 0 && <div className={styles.emptyCell} />}
+                {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
+                {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
+                {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
+                {(display === 4 || display === 14) && <div className={styles.blueStone} />}
+                {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
+                {(display === 6 || display === 16) && <div className={styles.greenStone} />}
+                {(display === 7 || display === 17) && <div className={styles.redStone} />}
+              </div>
+            )),
+          )}
+        </div>
+
+        <label style={{ fontSize: 20 }}>Hold</label>
+        <div className={styles.nextBlockBoard}>
+          {holdBlock.map((row, y) =>
             row.map((display, x) => (
               <div className={styles.cell} key={`${x}-${y}`}>
                 {display === 0 && <div className={styles.emptyCell} />}

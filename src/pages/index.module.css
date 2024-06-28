@@ -114,3 +114,8 @@
   display: flex;
   flex-direction: row;
 }
+
+.eachTopArea {
+  display: flex;
+  flex-direction: column;
+}
