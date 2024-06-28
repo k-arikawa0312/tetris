@@ -413,8 +413,10 @@ const saveBlock = (board: number[][], holdBlock: number[][]): [number[][], numbe
   }
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 4; x++) {
-      kindOfBlockOfHold = newHoldBlock[y][x];
-      newHoldBlock[y][x] = 0;
+      if (holdBlock[y][x] !== 0) {
+        kindOfBlockOfHold = newHoldBlock[y][x];
+        newHoldBlock[y][x] = 0;
+      }
     }
   }
   if (kindOfBlockOfHold !== -1) {
@@ -613,6 +615,7 @@ const Home = () => {
       newBoard = tempBoard;
       canChangeNextBlock = tempCanChangeNextBlock;
     }
+    setIsHold(false);
     setBoard(newBoard);
     setTurnNums(0);
     const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
