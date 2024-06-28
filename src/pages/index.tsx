@@ -600,6 +600,12 @@ const Home = () => {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ]);
+    setHoldBlock([
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ]);
     setIsActive(false);
     setSeconds(0);
     setRemovedLine(0);
@@ -609,40 +615,45 @@ const Home = () => {
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
       <div className={styles.topArea}>
-        <label style={{ textAlign: 'center', marginLeft: 40, fontSize: 20 }}>Next</label>
-        <div className={styles.nextBlockBoard}>
-          {nextBlock.map((row, y) =>
-            row.map((display, x) => (
-              <div className={styles.cell} key={`${x}-${y}`}>
-                {display === 0 && <div className={styles.emptyCell} />}
-                {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
-                {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
-                {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
-                {(display === 4 || display === 14) && <div className={styles.blueStone} />}
-                {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
-                {(display === 6 || display === 16) && <div className={styles.greenStone} />}
-                {(display === 7 || display === 17) && <div className={styles.redStone} />}
-              </div>
-            )),
-          )}
+        <div className={styles.eachTopArea}>
+          <div>
+            <label style={{ textAlign: 'center', fontSize: 20, marginLeft: 70 }}>Next</label>
+            <div className={styles.nextBlockBoard}>
+              {nextBlock.map((row, y) =>
+                row.map((display, x) => (
+                  <div className={styles.cell} key={`${x}-${y}`}>
+                    {display === 0 && <div className={styles.emptyCell} />}
+                    {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
+                    {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
+                    {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
+                    {(display === 4 || display === 14) && <div className={styles.blueStone} />}
+                    {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
+                    {(display === 6 || display === 16) && <div className={styles.greenStone} />}
+                    {(display === 7 || display === 17) && <div className={styles.redStone} />}
+                  </div>
+                )),
+              )}
+            </div>
+          </div>
         </div>
-
-        <label style={{ fontSize: 20 }}>Hold</label>
-        <div className={styles.nextBlockBoard}>
-          {holdBlock.map((row, y) =>
-            row.map((display, x) => (
-              <div className={styles.cell} key={`${x}-${y}`}>
-                {display === 0 && <div className={styles.emptyCell} />}
-                {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
-                {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
-                {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
-                {(display === 4 || display === 14) && <div className={styles.blueStone} />}
-                {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
-                {(display === 6 || display === 16) && <div className={styles.greenStone} />}
-                {(display === 7 || display === 17) && <div className={styles.redStone} />}
-              </div>
-            )),
-          )}
+        <div className={styles.eachTopArea}>
+          <label style={{ fontSize: 20, marginLeft: 70 }}>Hold</label>
+          <div className={styles.nextBlockBoard}>
+            {holdBlock.map((row, y) =>
+              row.map((display, x) => (
+                <div className={styles.cell} key={`${x}-${y}`}>
+                  {display === 0 && <div className={styles.emptyCell} />}
+                  {(display === 1 || display === 11) && <div className={styles.purpleStone} />}
+                  {(display === 2 || display === 12) && <div className={styles.skyblueStone} />}
+                  {(display === 3 || display === 13) && <div className={styles.yellowStone} />}
+                  {(display === 4 || display === 14) && <div className={styles.blueStone} />}
+                  {(display === 5 || display === 15) && <div className={styles.orangeStone} />}
+                  {(display === 6 || display === 16) && <div className={styles.greenStone} />}
+                  {(display === 7 || display === 17) && <div className={styles.redStone} />}
+                </div>
+              )),
+            )}
+          </div>
         </div>
       </div>
       <div>
