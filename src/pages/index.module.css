@@ -22,8 +22,7 @@
   display: flex;
   width: 30px;
   height: 30px;
-
-  /* border: 1px solid rgb(143 143 143 / 47.3%); */
+  border: 1px solid rgb(197 196 196 / 47.3%);
 }
 
 .stone {
