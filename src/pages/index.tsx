@@ -703,6 +703,7 @@ const Home = () => {
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
+      <audio src="C:\Users\iniad\Desktop\TS\tetris\src\pages\bgm.mp3" autoPlay loop />
       <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
       <div className={styles.topArea}>
         <div className={styles.eachTopArea}>
