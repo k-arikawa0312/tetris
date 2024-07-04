@@ -117,7 +117,7 @@ const changeNextBlock = (nextBlock: number[][], index: number) => {
 };
 
 const renewalBlock = (board: number[][], nextBlock: number[][]): [number[][], boolean] => {
-  const block = [];
+  let block: number[][] = [];
   const newBoard = structuredClone(board);
   let kindOfBlock = 0;
   for (let x = 0; x < 4; x++) {
@@ -131,29 +131,7 @@ const renewalBlock = (board: number[][], nextBlock: number[][]): [number[][], bo
   if (block.length === 0) {
     const index = Math.floor(Math.random() * 7);
     kindOfBlock = index + 1;
-    switch (index) {
-      case 0:
-        block.push([2, 1], [2, 2], [3, 2], [1, 2]);
-        break;
-      case 1:
-        block.push([0, 1], [1, 1], [2, 1], [3, 1]);
-        break;
-      case 2:
-        block.push([1, 1], [1, 2], [2, 1], [2, 2]);
-        break;
-      case 3:
-        block.push([1, 1], [2, 2], [3, 2], [1, 2]);
-        break;
-      case 4:
-        block.push([3, 1], [2, 2], [3, 2], [1, 2]);
-        break;
-      case 5:
-        block.push([2, 1], [2, 2], [3, 1], [1, 2]);
-        break;
-      case 6:
-        block.push([2, 1], [2, 2], [3, 2], [1, 1]);
-        break;
-    }
+    block = decideBlock(index);
   }
   for (const [x, y] of block) {
     if (newBoard[y - 1][x + 3] !== 0) {
@@ -337,8 +315,8 @@ const rotateBlock = (board: number[][], turnNums: number) => {
     [1, 1],
     [2, 0],
   ];
-  let pivot = [0, 0];
-  pivot = block[1];
+  let pivot = block[1];
+
   if (block.length !== 4 || kindOfBlock === 3) {
     return board;
   }
@@ -422,7 +400,7 @@ const saveBlock = (board: number[][], holdBlock: number[][]): [number[][], numbe
   const kindOfBlockOfBoard = nowKindOfBlock(board);
   let kindOfBlockOfHold = 0;
   let blockOfBoard: number[][] = [];
-  const blockOfHold = [];
+  let blockOfHold: number[][] = [];
   const newBoard = structuredClone(board);
   const newHoldBlock = structuredClone(holdBlock);
   for (let x = 0; x < 10; x++) {
@@ -443,29 +421,7 @@ const saveBlock = (board: number[][], holdBlock: number[][]): [number[][], numbe
   if (kindOfBlockOfHold !== -1) {
     blockOfBoard = decideBlock(kindOfBlockOfHold - 1);
   }
-  switch (kindOfBlockOfBoard - 1) {
-    case 0:
-      blockOfHold.push([2, 1], [2, 2], [3, 2], [1, 2]);
-      break;
-    case 1:
-      blockOfHold.push([0, 1], [1, 1], [2, 1], [3, 1]);
-      break;
-    case 2:
-      blockOfHold.push([1, 1], [1, 2], [2, 1], [2, 2]);
-      break;
-    case 3:
-      blockOfHold.push([1, 1], [2, 2], [3, 2], [1, 2]);
-      break;
-    case 4:
-      blockOfHold.push([3, 1], [2, 2], [3, 2], [1, 2]);
-      break;
-    case 5:
-      blockOfHold.push([2, 1], [2, 2], [3, 1], [1, 2]);
-      break;
-    case 6:
-      blockOfHold.push([2, 1], [2, 2], [3, 2], [1, 1]);
-      break;
-  }
+  blockOfHold = decideBlock(kindOfBlockOfBoard - 1);
   for (const [x, y] of blockOfBoard) {
     newBoard[y - 1][x + 3] = kindOfBlockOfHold;
   }
