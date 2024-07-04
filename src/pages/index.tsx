@@ -33,6 +33,33 @@ const nowKindOfBlock = (board: number[][]) => {
   }
   return -1;
 };
+const decideBlock = (index: number) => {
+  const block = [];
+  switch (index) {
+    case 0:
+      block.push([2, 1], [2, 2], [3, 2], [1, 2]);
+      break;
+    case 1:
+      block.push([0, 1], [1, 1], [2, 1], [3, 1]);
+      break;
+    case 2:
+      block.push([1, 1], [1, 2], [2, 1], [2, 2]);
+      break;
+    case 3:
+      block.push([1, 1], [2, 2], [3, 2], [1, 2]);
+      break;
+    case 4:
+      block.push([3, 1], [2, 2], [3, 2], [1, 2]);
+      break;
+    case 5:
+      block.push([2, 1], [2, 2], [3, 1], [1, 2]);
+      break;
+    case 6:
+      block.push([2, 1], [2, 2], [3, 2], [1, 1]);
+      break;
+  }
+  return block;
+};
 const changeNextBlock = (nextBlock: number[][], index: number) => {
   const newNextBlock = structuredClone(nextBlock);
   for (let x = 0; x < 4; x++) {
