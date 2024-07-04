@@ -130,34 +130,28 @@ const renewalBlock = (board: number[][], nextBlock: number[][]): [number[][], bo
   }
   if (block.length === 0) {
     const index = Math.floor(Math.random() * 7);
+    kindOfBlock = index + 1;
     switch (index) {
       case 0:
         block.push([2, 1], [2, 2], [3, 2], [1, 2]);
-        kindOfBlock = 1;
         break;
       case 1:
         block.push([0, 1], [1, 1], [2, 1], [3, 1]);
-        kindOfBlock = 2;
         break;
       case 2:
         block.push([1, 1], [1, 2], [2, 1], [2, 2]);
-        kindOfBlock = 3;
         break;
       case 3:
         block.push([1, 1], [2, 2], [3, 2], [1, 2]);
-        kindOfBlock = 4;
         break;
       case 4:
         block.push([3, 1], [2, 2], [3, 2], [1, 2]);
-        kindOfBlock = 5;
         break;
       case 5:
         block.push([2, 1], [2, 2], [3, 1], [1, 2]);
-        kindOfBlock = 6;
         break;
       case 6:
         block.push([2, 1], [2, 2], [3, 2], [1, 1]);
-        kindOfBlock = 7;
         break;
     }
   }
