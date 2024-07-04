@@ -421,7 +421,7 @@ const rotateBlock = (board: number[][], turnNums: number) => {
 const saveBlock = (board: number[][], holdBlock: number[][]): [number[][], number[][]] => {
   const kindOfBlockOfBoard = nowKindOfBlock(board);
   let kindOfBlockOfHold = 0;
-  const blockOfBoard = [];
+  let blockOfBoard: number[][] = [];
   const blockOfHold = [];
   const newBoard = structuredClone(board);
   const newHoldBlock = structuredClone(holdBlock);
@@ -441,29 +441,7 @@ const saveBlock = (board: number[][], holdBlock: number[][]): [number[][], numbe
     }
   }
   if (kindOfBlockOfHold !== -1) {
-    switch (kindOfBlockOfHold - 1) {
-      case 0:
-        blockOfBoard.push([2, 1], [2, 2], [3, 2], [1, 2]);
-        break;
-      case 1:
-        blockOfBoard.push([0, 1], [1, 1], [2, 1], [3, 1]);
-        break;
-      case 2:
-        blockOfBoard.push([1, 1], [1, 2], [2, 1], [2, 2]);
-        break;
-      case 3:
-        blockOfBoard.push([1, 1], [2, 2], [3, 2], [1, 2]);
-        break;
-      case 4:
-        blockOfBoard.push([3, 1], [2, 2], [3, 2], [1, 2]);
-        break;
-      case 5:
-        blockOfBoard.push([2, 1], [2, 2], [3, 1], [1, 2]);
-        break;
-      case 6:
-        blockOfBoard.push([2, 1], [2, 2], [3, 2], [1, 1]);
-        break;
-    }
+    blockOfBoard = decideBlock(kindOfBlockOfHold - 1);
   }
   switch (kindOfBlockOfBoard - 1) {
     case 0:
