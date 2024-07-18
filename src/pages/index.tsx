@@ -526,6 +526,7 @@ const Home = () => {
   const downBlock = (isDropping: boolean) => {
     if (isDropping) return board;
     const [newBoard, canChangeNextBlock] = fallBlock(board);
+    setScore(score + 1);
     if (canChangeNextBlock) {
       setTurnNums(0);
       setIsHold(false);
@@ -659,6 +660,7 @@ const Home = () => {
     setRemovedLine(0);
     setTurnNums(0);
     setIsHold(false);
+    setScore(0);
   };
   return (
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
