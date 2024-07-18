@@ -474,6 +474,7 @@ const Home = () => {
   const [removedLine, setRemovedLine] = useState(0);
   const [sevenBlockBag, setSevenBlockBag] = useState([0, 1, 2, 3, 4, 5, 6]);
   const [isHold, setIsHold] = useState(false); //holdした
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     let interval = 0;
@@ -564,15 +565,18 @@ const Home = () => {
   const hardDrop = () => {
     let newBoard = board;
     let canChangeNextBlock = false;
+    let addScore = 0;
 
     while (!canChangeNextBlock) {
       const [tempBoard, tempCanChangeNextBlock] = fallBlock(newBoard);
       newBoard = tempBoard;
       canChangeNextBlock = tempCanChangeNextBlock;
+      addScore += 2;
     }
     setIsHold(false);
     setBoard(newBoard);
     setTurnNums(0);
+    setScore(score + addScore);
     const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
     setRemovedLine(removedLine + newRemovedLine);
     let decidedBlock = Math.floor(Math.random() * 7);
@@ -660,6 +664,7 @@ const Home = () => {
     <div className={styles.container} onKeyDown={keyHandler} tabIndex={0}>
       <audio src="C:\Users\iniad\Desktop\TS\tetris\src\pages\bgm.mp3" autoPlay loop />
       <label style={{ fontSize: 20 }}>RemovedLine:{removedLine}</label>
+      <label style={{ fontSize: 20 }}>Score:{score}</label>
       <div className={styles.topArea}>
         <div className={styles.eachTopArea}>
           <div>
