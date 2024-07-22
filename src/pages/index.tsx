@@ -532,6 +532,19 @@ const Home = () => {
       setIsHold(false);
       const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
       setRemovedLine(removedLine + newRemovedLine);
+      let additionalScore = 100;
+      switch (newRemovedLine) {
+        case 2:
+          additionalScore = 300;
+          break;
+        case 3:
+          additionalScore = 500;
+          break;
+        case 4:
+          additionalScore = 800;
+          break;
+      }
+      setScore(score + additionalScore + 1);
       let decidedBlock = Math.floor(Math.random() * 7);
 
       while (!sevenBlockBag.includes(decidedBlock)) {
@@ -577,9 +590,24 @@ const Home = () => {
     setIsHold(false);
     setBoard(newBoard);
     setTurnNums(0);
-    setScore(score + addScore);
     const [deletedBoard, newRemovedLine] = deleteLine(newBoard);
     setRemovedLine(removedLine + newRemovedLine);
+    let additionalScore = 0;
+    switch (newRemovedLine) {
+      case 1:
+        additionalScore = 100;
+        break;
+      case 2:
+        additionalScore = 300;
+        break;
+      case 3:
+        additionalScore = 500;
+        break;
+      case 4:
+        additionalScore = 800;
+        break;
+    }
+    setScore(score + additionalScore + addScore);
     let decidedBlock = Math.floor(Math.random() * 7);
 
     while (!sevenBlockBag.includes(decidedBlock)) {
